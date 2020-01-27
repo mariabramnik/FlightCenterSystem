@@ -19,22 +19,25 @@ namespace FlightManagementSystem.Modules
         {
             con.Close();
         }
-        public void Add(Customer ob)
+        public int Add(Customer ob)
         {
+            int res = 0;
             int id = ob.id;
-            Customer customer = Get(id);
-            if (!(customer is null))
+            Customer customer =  GetCustomerByUserName(ob.userName);
+            //  throw new CustomerAlreadyExistException("This customer is already exist");
+            if (customer is null)
+            {
+                string str = $"INSERT INTO Customers VALUES({id},'{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}');SELECT SCOPE_IDENTITY()";
+                using (SqlCommand cmd = new SqlCommand(str, con))
+                {
+                    res = (int)cmd.ExecuteScalar();
+                }
+            }
+            else
             {
                 throw new CustomerAlreadyExistException("This customer is already exist");
             }
-            string str = string.Format($"INSERT INTO Customers VALUES({id},'{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}')");
-            
-            using (SqlCommand cmd = new SqlCommand(str, con))
-            {
-                cmd.ExecuteNonQuery();
-            }
-
-         
+            return res;        
         }
 
         public Customer Get(int id)

@@ -19,24 +19,31 @@ namespace FlightManagementSystem.Modules
         {
             con.Close();
         }
-        public void Add(Flight ob)
+        public int Add(Flight ob)
         {
+            int res = 0;
             int id = ob.id;
-            Flight fl = GetFlightById(id);
+            Flight fl = GetFlightByAllParamets(ob.airLineCompanyId,ob.originCountryCode,
+                ob.destinationCountryCode,ob.departureTime,ob.landingTime);
             if (fl is null)
             {
-
                 string str = $"INSERT INTO Flights VALUES({id},{ob.airLineCompanyId},{ob.originCountryCode}," +
-                    $"{ob.destinationCountryCode},'{ob.departureTime}','{ob.landingTime}',{ob.remainingTickets},{ob.flightStatusId})";
+                    $"{ob.destinationCountryCode},'{ob.departureTime}','{ob.landingTime}',{ob.remainingTickets},{ob.flightStatusId});SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    cmd.ExecuteNonQuery();
+                    res = (int)cmd.ExecuteScalar();
                 }
             }
             else
             {
                 throw new FlightAlreadyExistException("This Flight already exist");
             }
+            return res;
+        }
+
+        private Flight GetFlightByAllParamets(int airLineCompanyId, int originCountryCode, int destinationCountryCode, DateTime departureTime, DateTime landingTime)
+        {
+            throw new NotImplementedException();
         }
 
         public Dictionary<Flight, int> GetAllFlightsVacancy()

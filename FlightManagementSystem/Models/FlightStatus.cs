@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class FlightStatus
+    public class FlightStatus : IPoco
     {
         public int id;
         public string statusName;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class Ticket
+    public class Ticket : IPoco
     {
         public int id;
         public int flightId;

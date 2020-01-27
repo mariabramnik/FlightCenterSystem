@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-   public class AirLineCompany
+   public class AirLineCompany : IPoco
     {
         public int id;
         public string airLineName;
@@ -28,7 +28,7 @@ namespace FlightManagementSystem.Models
         {
             var company = obj as AirLineCompany;
             return !(company is null) &&
-                   id == company.id;
+                 id == company.id;
         }
 
         public override int GetHashCode()

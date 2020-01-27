@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class Flight
+    public class Flight : IPoco
     {
         public int id;
         public int airLineCompanyId;
@@ -35,8 +35,9 @@ namespace FlightManagementSystem.Models
         public override bool Equals(object obj)
         {
             var flight = obj as Flight;
-            return flight != null &&
-                   id == flight.id;
+            return !(flight is null) &&
+                   id == flight.id ;
+                   
         }
 
         public override int GetHashCode()
@@ -52,7 +53,7 @@ namespace FlightManagementSystem.Models
         public static bool operator ==(Flight f1, Flight f2)
         {
             bool res = false;
-            if (f1.id == f2.id)
+            if (f1.id == f2.id )             
             {
                 res = true;
             }

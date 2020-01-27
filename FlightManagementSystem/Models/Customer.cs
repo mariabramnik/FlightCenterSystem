@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class Customer
+    public class Customer : IPoco
     {
         public int id;
         public string firstName;

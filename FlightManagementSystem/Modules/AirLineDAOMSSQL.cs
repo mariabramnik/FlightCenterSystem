@@ -51,33 +51,35 @@ namespace FlightManagementSystem.Modules
             con.Close();
         }
        
-        public void Add(AirLineCompany ob)
+        public int Add(AirLineCompany ob)
         {
+            int res = 0;
             int id = ob.id;
             string airLineName = ob.airLineName;
             string userName = ob.userName;
             string password = ob.password;
             int countryCode = ob.countryCode;
-
-            if (idAiLineCompanyDict.ContainsKey(id))
+            AirLineCompany comp = GetAirLineCompanyByName(airLineName);
+            if (comp is null)
+            {
+                string str = $"INSERT INTO AirlineCompanies VALUES({id},'{airLineName}','{userName}','{password}',{countryCode});SELECT SCOPE_IDENTITY()";
+                using (SqlCommand cmd = new SqlCommand(str, con))
+                {
+                    res  =(int) cmd.ExecuteScalar();
+                }
+            }
+            else
             {
                 throw new AirLineCompanyAlreadyExistException("Such Airline Company already exist");
             }
-            string str = $"INSERT INTO AirlineCompanies VALUES({id},'{airLineName}','{userName}','{password}',{countryCode})";            
-            
-            using (SqlCommand cmd = new SqlCommand(str, con))
-            {
-                cmd.ExecuteNonQuery();
-            }
-            idAiLineCompanyDict.Add(id,ob);
-            userNameCompanyDict.Add(userName, ob);
+            // idAiLineCompanyDict.Add(id,ob);
+            // userNameCompanyDict.Add(userName, ob);
+            return res;
             
         }
 
         public AirLineCompany Get(int id)
         {
-            /*
-          
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE ID = {id}";
             SqlCommand cmd = new SqlCommand(str, con);
@@ -99,14 +101,6 @@ namespace FlightManagementSystem.Modules
                 }
             }
             
-            return comp;
-            */
-            AirLineCompany comp = null;
-            if (idAiLineCompanyDict.ContainsKey(id))
-            {
-                 comp = idAiLineCompanyDict[id];
-            }
-
             return comp;
 
         }
@@ -137,9 +131,7 @@ namespace FlightManagementSystem.Modules
         }
 
         public AirLineCompany GetAirLineByUserName(string userName)
-        {
-            /*
-            
+        {          
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE USER_NAME = '{userName}'";
             SqlCommand cmd = new SqlCommand(str, con);
@@ -160,15 +152,6 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
-           
-            return comp;
-            */
-            AirLineCompany comp = null;
-            if (userNameCompanyDict.ContainsKey(userName))
-            {
-                comp = userNameCompanyDict[userName];
-            }
-
             return comp;
 
         }
