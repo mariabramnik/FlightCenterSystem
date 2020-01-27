@@ -12,7 +12,7 @@ namespace FlightManagementSystem.Modules
 
         public IList<AirLineCompany> GetAllAirLineCompanies()
         {
-            return _airLineDAO.GetAll();
+            return _airLineDAO.GetAll(); 
         }
 
         public IList<Flight> GetAllFlights()
