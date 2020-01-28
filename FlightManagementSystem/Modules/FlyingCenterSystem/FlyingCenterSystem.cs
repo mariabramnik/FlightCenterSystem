@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Data.SqlClient;
+using FlightManagementSystem.Models;
+using FlightManagementSystem.Modules.Login;
 
 namespace FlightManagementSystem.Modules.FlyingCenterSystem
 {
@@ -92,33 +94,28 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
 
         private void execute()
         {
-            int res;
-            strTimeout = ConfigurationManager.AppSettings.Get("Key0");
-            bool bPrs = int.TryParse(strTimeout, out res);
-            if (bPrs)
+            _timeout = AppConfig.timeOut;
+            LoginToken<Administrator> ltAdmin = null;
+            LoginService ls = new LoginService();
+            bool resLogin = ls.TryAdminLogin("9999", "admin", out ltAdmin);
+            if (resLogin == true)
             {
-                _timeout = res;
-            }
-            else
-            {
-                _timeout = 1000;
-            }
-            while (!_disposed)
-            {       
-                Debug.WriteLine("Executed: {0}", _executeCntr);
-                try
+                ILoggedInAdministratorFacade iLoggedAdminFacade = GetFacade<ILoggedInAdministratorFacade>();
+                while (!_disposed)
                 {
-                   Thread.Sleep(_timeout);
+                    //Debug.WriteLine("Executed: {0}", _executeCntr);
+                    iLoggedAdminFacade.TransferElapsedFlightsToHistory(ltAdmin);
+                    try
+                    {
+                        Thread.Sleep(_timeout);
+                    }
+                    catch (ThreadInterruptedException e)
+                    {
+                        break;
+                    }
                 }
-                catch (ThreadInterruptedException e)
-                {
-                   _executeCntr = 0;
-                }
-               
-                _executeCntr = 0;
             }
         }
-
         public void Dispose()
         {
             _disposed = true;

@@ -12,5 +12,6 @@ namespace FlightManagementSystem.Modules
         void RemoveAllFromFlightStatus();
         bool IfTableFlightStatusIsEmpty();
         FlightStatus Get(int id);
+
     }
 }

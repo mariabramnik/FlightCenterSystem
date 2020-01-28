@@ -464,7 +464,7 @@ namespace TestForFlightManagmentSystem
       
                 Ticket ticket = new Ticket(1,1,2);
                 Flight flight = iCustomerFS.GetFlightByIdFlight(ltCustomer,1);
-                iCustomerFS.PurchaseTicket(ltCustomer,flight,ticket.id);
+                iCustomerFS.PurchaseTicket(ltCustomer,flight);
                 IList<Flight> listFlights = new List<Flight>();
                 IList<Flight> originFlights = new List<Flight>();
                 originFlights.Add(flight);

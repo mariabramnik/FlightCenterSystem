@@ -12,7 +12,7 @@ namespace FlightManagementSystem.Modules
        
        void CancelTicket(LoginToken<Customer>token,Ticket ticket);
        IList<Flight>GetAllMyFlights(LoginToken<Customer>token);
-        Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight, int ticket_id);
-        Flight GetFlightByIdFlight(LoginToken<Customer> token,int id);
+       Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight);
+       Flight GetFlightByIdFlight(LoginToken<Customer> token,int id);
     }
 }

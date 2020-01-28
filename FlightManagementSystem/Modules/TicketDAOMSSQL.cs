@@ -19,42 +19,44 @@ namespace FlightManagementSystem.Modules
         {
             con.Close();
         }
-        public void Add(Ticket ob)
+        public int Add(Ticket ob)
         {
-            int id = ob.id;
-            Ticket ticket = Get(id);
+            int res = 0;
+            Ticket ticket = GetTicketByAllParametrs(ob);
             if (ticket is null)
             {
-                string str = string.Format($"INSERT INTO Tickets VALUES({id},{ob.flightId},{ob.customerId})");
+                string str = string.Format($"INSERT INTO Tickets VALUES({ob.id},{ob.flightId},{ob.customerId});SELECT SCOPE_IDENTITY()");
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    cmd.ExecuteNonQuery();
+                    res = (int)cmd.ExecuteScalar();
                 }
             }
             else
             {
                 throw new TicketAlreadyExistException("this ticket already exist");
             }
+                return res;
 
         }
         public Ticket Get(int id)
         {
             Ticket ticket = null;
             string str = $"SELECT * FROM Tickets WHERE ID = {id}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();
                         ticket = new Ticket
                         {
                             id = (int)reader["ID"],
                             customerId = (int)reader["CUSTOMER_ID"],
                             flightId = (int)reader["FLIGHT_ID"]
-     
+
                         };
+                        
                     }
                 }
             }
@@ -64,70 +66,91 @@ namespace FlightManagementSystem.Modules
             }
             return ticket;
         }
+        public Ticket GetTicketByAllParametrs(Ticket ticket)
+        {
+            Ticket tick = null;
+            string str = $"SELECT * FROM Tickets WHERE FLIGHT_ID = {ticket.flightId} AND CUSTOMER_ID = {ticket.customerId}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();                      
+                        tick = new Ticket
+                        {
+                            id = (int)reader["ID"],
+                            customerId = (int)reader["CUSTOMER_ID"],
+                            flightId = (int)reader["FLIGHT_ID"]
 
+                        };                      
+                    }
+                }
+            }
+            return tick;
+        }
         public List<Ticket> GetAll()
         {
             List<Ticket> ticketsList = new List<Ticket>();
             string str = $"SELECT * FROM Tickets";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Ticket ticket = new Ticket
+                    while (reader.Read())
                     {
-                        id = (int)reader["ID"],
-                        customerId = (int)reader["CUSTOMER_ID"],
-                        flightId = (int)reader["FLIGHT_ID"]
-                    };
-                    ticketsList.Add(ticket);
+                        Ticket ticket = new Ticket
+                        {
+                            id = (int)reader["ID"],
+                            customerId = (int)reader["CUSTOMER_ID"],
+                            flightId = (int)reader["FLIGHT_ID"]
+                        };
+                        ticketsList.Add(ticket);
+                    }
                 }
-
             }
             return ticketsList;
         }
 
         public void Remove(Ticket ob)
         {
-            int id = ob.id;
-            Ticket ticket = Get(id);
+            Ticket ticket = Get(ob.id);
             if (ticket is null)
             {
                 throw new TicketAlreadyExistException("This ticketis is already exist");
             }
-            string str = string.Format($"DELETE FROM Tickets WHERE ID = {id})");
+            string str = string.Format($"DELETE FROM Tickets WHERE ID = {ob.id})");
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
         }
 
-            public Flight GetFlightById(int id)
+        public Flight GetFlightById(int id)
+        {
+            Flight fl = null;
+            string str = $"SELECT * FROM Flights WHERE ID = {id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                Flight fl = null;
-                string str = $"SELECT * FROM Flights WHERE ID = {id}";
-                SqlCommand cmd = new SqlCommand(str, con);
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
-                        reader.Read();
+                        reader.Read();                      
+                        fl = new Flight
                         {
-                            fl = new Flight
-                            {
-                                id = (int)reader["ID"],
-                                airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                                originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                                destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                                departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                                landingTime = (DateTime)reader["LANDING_TIME"],
-                                remainingTickets = (int)reader["REMAINING_TICKETS"],
-                                flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                            };
-                        }
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };                     
                     }
                 }
-
+            }
                 return fl;
             }
         
@@ -150,20 +173,21 @@ namespace FlightManagementSystem.Modules
         {
             List<Ticket> ticketsListByFlight = new List<Ticket>();
             string str = $"SELECT * FROM Tickets WHERE FLIGHT_ID = {id_flight}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Ticket ticket = new Ticket
+                    while (reader.Read())
                     {
-                        id = (int)reader["ID"],
-                        customerId = (int)reader["CUSTOMER_ID"],
-                        flightId = (int)reader["FLIGHT_ID"]
-                    };
-                    ticketsListByFlight.Add(ticket);
+                        Ticket ticket = new Ticket
+                        {
+                            id = (int)reader["ID"],
+                            customerId = (int)reader["CUSTOMER_ID"],
+                            flightId = (int)reader["FLIGHT_ID"]
+                        };
+                        ticketsListByFlight.Add(ticket);
+                    }
                 }
-
             }
             return ticketsListByFlight;
         }
@@ -174,25 +198,26 @@ namespace FlightManagementSystem.Modules
                 "Flights.ORIGIN_COUNTRY_CODE,Flights.DESTINATION_COUNTRY_CODE,Flights.DEPARTURE_TIME," +
                 "Flights.LANDING_TIME,Flights.REMAINING_TICKETS,Flights.FLIGHT_STATUS_ID FROM Tickets JOIN " +
                 "Flights ON Tickets.FLIGHT_ID = Flights.Id WHERE CUSTOMER_ID = 2;";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Flight flight = new Flight
+                    while (reader.Read())
                     {
-                        id = (int)reader["ID"],
-                        airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                        originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                        destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                        departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                        landingTime = (DateTime)reader["LANDING_TIME"],
-                        remainingTickets = (int)reader["REMAINING_TICKETS"],
-                        flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                    };
-                    listFlightByCustomer.Add(flight);
+                        Flight flight = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        listFlightByCustomer.Add(flight);
+                    }
                 }
-
             }
             return listFlightByCustomer;
         }
@@ -215,6 +240,14 @@ namespace FlightManagementSystem.Modules
                 res = true;
             }
             return res;
+        }
+        public void InsertTicketToTicketHistory(Ticket ticket)
+        {
+            string str = $"INSERT INTO Tickets_History VALUES({ticket.id},{ticket.flightId},{ticket.customerId})";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

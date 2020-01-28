@@ -19,11 +19,6 @@ namespace FlightManagementSystem.Models
             this.flightId = flightId;
             this.customerId = customerId;
         }
-        public Ticket(int flightId,int customerId)
-        {
-            this.flightId = flightId;
-            this.customerId = customerId;
-        }
 
         public override bool Equals(object obj)
         {

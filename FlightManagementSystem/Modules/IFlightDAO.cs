@@ -18,6 +18,12 @@ namespace FlightManagementSystem.Modules
         List<Flight> GetFlightsByOriginCountryCode(Country country);
         void RemoveAllFromFlights();
         bool IfTableFlightsIsEmpty();
+        Flight GetFlightByAllParametrs(Flight flight);
+        List<Flight> SelectElapsedFlightsToHistory();
+        void InsertElapsedFlightsToHistory(List<Flight> flightList);
+        void AddFlightToHistoryTable(Flight ob);
+        void DeleteElapsedFlightsFromFlights(List<Flight> flightList);
+   
 
     }
 }

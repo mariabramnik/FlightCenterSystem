@@ -22,12 +22,10 @@ namespace FlightManagementSystem.Modules
         public int Add(Flight ob)
         {
             int res = 0;
-            int id = ob.id;
-            Flight fl = GetFlightByAllParamets(ob.airLineCompanyId,ob.originCountryCode,
-                ob.destinationCountryCode,ob.departureTime,ob.landingTime);
+            Flight fl = GetFlightByAllParametrs(ob);               
             if (fl is null)
             {
-                string str = $"INSERT INTO Flights VALUES({id},{ob.airLineCompanyId},{ob.originCountryCode}," +
+                string str = $"INSERT INTO Flights VALUES({ob.id},{ob.airLineCompanyId},{ob.originCountryCode}," +
                     $"{ob.destinationCountryCode},'{ob.departureTime}','{ob.landingTime}',{ob.remainingTickets},{ob.flightStatusId});SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
@@ -41,34 +39,61 @@ namespace FlightManagementSystem.Modules
             return res;
         }
 
-        private Flight GetFlightByAllParamets(int airLineCompanyId, int originCountryCode, int destinationCountryCode, DateTime departureTime, DateTime landingTime)
+        public Flight GetFlightByAllParametrs(Flight flight)
         {
-            throw new NotImplementedException();
+            Flight fl = null;
+            string str = $"SELECT * FROM Flights WHERE AIRLINECOMPANY_ID = {flight.airLineCompanyId}," +
+                $"ORIGIN_COUNTRY_CODE = {flight.originCountryCode},DESTINATION_COUNTRY_CODE = {flight.destinationCountryCode}," +
+                $"DEPARTURE_TIME = '{flight.departureTime}',LANDING_TIME = '{flight.landingTime}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                    }
+                }
+            }
+            return flight;
         }
 
         public Dictionary<Flight, int> GetAllFlightsVacancy()
         {
             Dictionary<Flight,int> vacFlights = new Dictionary<Flight, int>();
             string str = $"SELECT * FROM Flights WHERE REMAINING_TICKETS > 0 AND FLIGHT_STATUS_ID = 1";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Flight fl = new Flight
+                    while (reader.Read())
                     {
-                        id = (int)reader["ID"],                             
-                        airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                        originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                        destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                        departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                        landingTime = (DateTime)reader["LANDING_TIME"],
-                        remainingTickets = (int)reader["REMAINING_TICKETS"],
-                        flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                    };
-                    vacFlights.Add(fl, fl.id);
-                }
+                        Flight fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        vacFlights.Add(fl, fl.id);
+                    }
 
+                }
             }
             return vacFlights;
         }
@@ -77,13 +102,13 @@ namespace FlightManagementSystem.Modules
         {
             Flight fl = null;
             string str = $"SELECT * FROM Flights WHERE ID = {id}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            { 
-                if (reader.HasRows)
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();                       
                         fl = new Flight
                         {
                             id = (int)reader["ID"],
@@ -94,42 +119,39 @@ namespace FlightManagementSystem.Modules
                             landingTime = (DateTime)reader["LANDING_TIME"],
                             remainingTickets = (int)reader["REMAINING_TICKETS"],
                             flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                        };
+                         };                     
                     }
-                }          
+                }
             }
-
             return fl;
         }
 
         public List<Flight> GetFlightsByCustomer(Customer customer)
         {
-            int custId = customer.id;
             List<Flight> flByCustomer = new List<Flight>();
             Flight fl = null;
             string str = $"SELECT Flights.ID,Flights.AIRLINECOMPANY_ID, Flights.ORIGIN_COUNTRY_CODE," +
                 $"Flights.DESTINATION_COUNTRY_CODE,Flights.DEPARTURE_TIME,Flights.LANDING_TIME,Flights.REMAINING_TICKETS," +
-                $"Flights.FLIGHT_STATUS_ID FROM  Tickets JOIN Flights ON Tickets.FLIGHT_ID = Flights.ID WHERE Tickets.CUSTOMER_ID = {custId}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+                $"Flights.FLIGHT_STATUS_ID FROM  Tickets JOIN Flights ON Tickets.FLIGHT_ID = Flights.ID WHERE Tickets.CUSTOMER_ID = {customer.id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    {
-                        fl = new Flight
-                        {
-                            id = (int)reader["ID"],
-                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                            landingTime = (DateTime)reader["LANDING_TIME"],
-                            remainingTickets = (int)reader["REMAINING_TICKETS"],
-                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                        };
-                        flByCustomer.Add(fl);
-                    }
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                { 
+                     while( reader.Read())
+                     {
+                         fl = new Flight
+                         {
+                             id = (int)reader["ID"],
+                             airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                             originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                             destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                             departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                             landingTime = (DateTime)reader["LANDING_TIME"],
+                             remainingTickets = (int)reader["REMAINING_TICKETS"],
+                             flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                         };
+                         flByCustomer.Add(fl);
+                     }                   
                 }
             }
             return flByCustomer;
@@ -140,13 +162,12 @@ namespace FlightManagementSystem.Modules
             //SELECT* FROM Flights WHERE DEPARTURE_TIME = '2020-08-23 10:20.000';
             List<Flight> flByDepartureTime = new List<Flight>();
             Flight fl = null;
-            string str = $"SELECT* FROM Flights WHERE DEPARTURE_TIME = '{datetime}' ";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            string str = $"SELECT* FROM Flights WHERE DEPARTURE_TIME = '{datetime}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
-                {
-                    reader.Read();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {   
+                    while(reader.Read())
                     {
                         fl = new Flight
                         {
@@ -160,6 +181,7 @@ namespace FlightManagementSystem.Modules
                             flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
                         };
                         flByDepartureTime.Add(fl);
+                        
                     }
                 }
             }
@@ -168,30 +190,29 @@ namespace FlightManagementSystem.Modules
 
         public List<Flight> GetFlightsByDestinationCountry(Country country)
         {
-            int countryId = country.id;
             List<Flight> flByDestCountry = new List<Flight>();
             Flight fl = null;
-            string str = $"SELECT* FROM Flights WHERE DESTINATION_COUNTRY_CODE = {countryId}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            string str = $"SELECT* FROM Flights WHERE DESTINATION_COUNTRY_CODE = {country.id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
-                    {
-                        fl = new Flight
-                        {
-                            id = (int)reader["ID"],
-                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                            landingTime = (DateTime)reader["LANDING_TIME"],
-                            remainingTickets = (int)reader["REMAINING_TICKETS"],
-                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                        };
-                        flByDestCountry.Add(fl);
-                    }
+                     while(reader.Read())
+                     {
+                         fl = new Flight
+                         {
+                              id = (int)reader["ID"],
+                              airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                              originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                              destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                              departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                              landingTime = (DateTime)reader["LANDING_TIME"],
+                              remainingTickets = (int)reader["REMAINING_TICKETS"],
+                              flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                         };
+                         flByDestCountry.Add(fl);
+                        
+                     }
                 }
             }
             return flByDestCountry;
@@ -201,27 +222,27 @@ namespace FlightManagementSystem.Modules
         {
             List<Flight> flByLandingTime = new List<Flight>();
             Flight fl = null;
-            string str = $"SELECT* FROM Flights WHERE LANDING_TIME = '{datetime}' ";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            string str = $"SELECT* FROM Flights WHERE LANDING_TIME = '{datetime}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
-                    {
-                        fl = new Flight
-                        {
-                            id = (int)reader["ID"],
-                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                            landingTime = (DateTime)reader["LANDING_TIME"],
-                            remainingTickets = (int)reader["REMAINING_TICKETS"],
-                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                        };
-                        flByLandingTime.Add(fl);
-                    }
+                     while(reader.Read())
+                     {
+                          fl = new Flight
+                          {
+                              id = (int)reader["ID"],
+                              airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                              originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                              destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                              departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                              landingTime = (DateTime)reader["LANDING_TIME"],
+                              remainingTickets = (int)reader["REMAINING_TICKETS"],
+                              flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                          };
+                          flByLandingTime.Add(fl);
+                        
+                     }
                 }
             }
             return flByLandingTime;
@@ -229,30 +250,29 @@ namespace FlightManagementSystem.Modules
 
         public List<Flight> GetFlightsByOriginCountryCode(Country country)
         {
-            int countryId = country.id;
             List<Flight> flByOriginCountry = new List<Flight>();
             Flight fl = null;
-            string str = $"SELECT* FROM Flights WHERE ORIGIN_COUNTRY_CODE = {countryId}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            string str = $"SELECT* FROM Flights WHERE ORIGIN_COUNTRY_CODE = {country.id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
-                    {
-                        fl = new Flight
-                        {
-                            id = (int)reader["ID"],
-                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                            landingTime = (DateTime)reader["LANDING_TIME"],
-                            remainingTickets = (int)reader["REMAINING_TICKETS"],
-                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                        };
-                        flByOriginCountry.Add(fl);
-                    }
+                     while(reader.Read())
+                     {
+                         fl = new Flight
+                         {
+                              id = (int)reader["ID"],
+                              airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                              originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                              destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                              departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                              landingTime = (DateTime)reader["LANDING_TIME"],
+                              remainingTickets = (int)reader["REMAINING_TICKETS"],
+                              flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                         };
+                         flByOriginCountry.Add(fl);
+                        
+                     }
                 }
             }
             return flByOriginCountry;
@@ -268,28 +288,29 @@ namespace FlightManagementSystem.Modules
         {
             List<Flight> allFlights = new List<Flight>();
             string str = $"SELECT * FROM Flights ";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Flight fl = new Flight
+                    while (reader.Read())
                     {
-                        id = (int)reader["ID"],
-                        airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
-                        originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
-                        destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
-                        departureTime = (DateTime)reader["DEPARTURE_TIME"],
-                        landingTime = (DateTime)reader["LANDING_TIME"],
-                        remainingTickets = (int)reader["REMAINING_TICKETS"],
-                        flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
-                    };
-                    allFlights.Add(fl);
+                        Flight fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        allFlights.Add(fl);
+                    }
                 }
             }
             return allFlights;
         }
-    
 
         public void Remove(Flight ob)
         {
@@ -298,8 +319,7 @@ namespace FlightManagementSystem.Modules
          {
                 throw new FlightNotExistException("this flight not exist in system");
          }
-        int id = ob.id;
-        string str = string.Format($"DELETE FROM Flights WHERE ID = {id})");
+        string str = string.Format($"DELETE FROM Flights WHERE ID = {ob.id})");
         using (SqlCommand cmd = new SqlCommand(str, con))
         {
             cmd.ExecuteNonQuery();
@@ -314,10 +334,9 @@ namespace FlightManagementSystem.Modules
             {
                 throw new FlightNotExistException("this flight not exist in system");
             }
-            int id = ob.id;
             string str = string.Format($"UPDATE Flights SET AIRLINECOMPANY_ID = {ob.airLineCompanyId},ORIGIN_COUNTRY_CODE = {ob.originCountryCode}, " +
                 $"DESTINATION_COUNTRY_CODE = {ob.destinationCountryCode}, DEPARTURE_TIME = '{ob.departureTime}', LANDING_TIME = '{ob.landingTime}', " +
-                $"REMAINING_TIME = {ob.remainingTickets}, FLIGHT_STATUS_ID = {ob.flightStatusId} WHERE ID = {id}");
+                $"REMAINING_TIME = {ob.remainingTickets}, FLIGHT_STATUS_ID = {ob.flightStatusId} WHERE ID = {ob.id}");
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
@@ -336,14 +355,71 @@ namespace FlightManagementSystem.Modules
         {
             bool res = false;
             string str = $"SELECT COUNT(*) FROM Flights";
-            SqlCommand cmd = new SqlCommand(str, con);
-            int num = (int)cmd.ExecuteScalar();
-            if (num == 0)
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                res = true;
+                int num = (int)cmd.ExecuteScalar();
+                if (num == 0)
+                {
+                    res = true;
+                }
             }
             return res;
         }
-    }
+        public List<Flight> SelectElapsedFlightsToHistory()
+        {
+            //DateTime dtCurr = DateTime.Now;
+            // DateTime dt = dtCurr.AddHours(3.0);
+            List<Flight> elapsedFlights = new List<Flight>();
+            string str = $"SELECT * FROM Flights WHERE LANDING_TIME BETWEEN (SELECT DATEADD(DAY,-1, GETDATE())) AND (SELECT DATEADD(HOUR,-3, GETDATE()));";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Flight fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        elapsedFlights.Add(fl);
+                    }
+                }
+            }
+            return elapsedFlights;
+        }
+        public void InsertElapsedFlightsToHistory(List<Flight> flightList)
+        {
+            foreach(Flight fl in flightList)
+            {
+                AddFlightToHistoryTable(fl);
+            }
+        }
+        public void AddFlightToHistoryTable(Flight ob)
+        {
+            string str = $"INSERT INTO Flights_History VALUES({ob.id},{ob.airLineCompanyId},{ob.originCountryCode}," +
+                    $"{ob.destinationCountryCode},'{ob.departureTime}','{ob.landingTime}')";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+               cmd.ExecuteNonQuery();
+            }
+        }
+        public void DeleteElapsedFlightsFromFlights(List<Flight> flightList)
+        {
+            foreach (Flight fl in flightList)
+            {
+                Remove(fl);
+            }
+        }
 
+    
+
+  
+    }
 }

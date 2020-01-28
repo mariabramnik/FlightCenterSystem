@@ -25,9 +25,10 @@ namespace FlightManagementSystem.Modules
             _airLineDAO.Update(comp);
         }
 
-        public void CreateFlight(LoginToken<AirLineCompany> token, Flight flight)
+        public int CreateFlight(LoginToken<AirLineCompany> token, Flight flight)
         {
-            _flightDAO.Add(flight);
+           int res =  _flightDAO.Add(flight);
+            return res;
         }
 
         public IList<Flight> GetAllFlights(LoginToken<AirLineCompany> token)

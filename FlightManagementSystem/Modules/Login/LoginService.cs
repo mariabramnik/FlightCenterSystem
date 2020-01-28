@@ -32,10 +32,9 @@ namespace FlightManagementSystem.Modules.Login
             AirLineCompany comp = null;
             _airLineDAO = new AirLineDAOMSSQL();
             _airLineDAO.SQLConnectionOpen();
-            Dictionary<string,AirLineCompany> CompanyByUserNameDict =  _airLineDAO.userNameCompanyDict;
-            if (CompanyByUserNameDict.ContainsKey(userName))
-            {
-                comp = CompanyByUserNameDict[userName];
+             comp = _airLineDAO.GetAirLineByUserName(userName);
+             if(!(comp is null))
+            { 
                 if (comp.password != password)
                 {
                     throw new WrongPasswordException("entered password is not correct");

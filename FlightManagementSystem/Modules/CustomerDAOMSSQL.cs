@@ -24,7 +24,6 @@ namespace FlightManagementSystem.Modules
             int res = 0;
             int id = ob.id;
             Customer customer =  GetCustomerByUserName(ob.userName);
-            //  throw new CustomerAlreadyExistException("This customer is already exist");
             if (customer is null)
             {
                 string str = $"INSERT INTO Customers VALUES({id},'{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}');SELECT SCOPE_IDENTITY()";
@@ -44,13 +43,13 @@ namespace FlightManagementSystem.Modules
         {    
             Customer customer = null;
             string str = $"SELECT * FROM Customers WHERE ID = {id}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();
                         customer = new Customer
                         {
                             id = (int)reader["ID"],
@@ -61,8 +60,7 @@ namespace FlightManagementSystem.Modules
                             address = (string)reader["ADDRESS"],
                             phoneNo = (string)reader["PHONE_NO"],
                             creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
-
-                        };
+                        };                        
                     }
                 }
             }
@@ -70,47 +68,16 @@ namespace FlightManagementSystem.Modules
         }
 
         public List<Customer> GetAll()
-        {
-           
+        {         
             List<Customer> customersList = new List<Customer>();
             string str = $"SELECT * FROM Customers";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Customer customer = new Customer
+                    while (reader.Read())
                     {
-                        id = (int)reader["ID"],
-                        firstName = (string)reader["FIRST_NAME"],
-                        lastName = (string)reader["LAST_NAME"],
-                        userName = (string)reader["USER_NAME"],
-                        password = (string)reader["PASSWORD"],
-                        address = (string)reader["ADDRESS"],
-                        phoneNo = (string)reader["PHONE_NO"],
-                        creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
-                    };
-                    customersList.Add(customer);
-                }
-
-            }
-            
-            return customersList;
-        }
-
-        public Customer GetCustomerByUserName(string userName)
-        {
-           
-            Customer customer = null;
-            string str = $"SELECT * FROM Customers WHERE USER_NAME = '{userName}'";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    {
-                        customer = new Customer
+                        Customer customer = new Customer
                         {
                             id = (int)reader["ID"],
                             firstName = (string)reader["FIRST_NAME"],
@@ -120,15 +87,42 @@ namespace FlightManagementSystem.Modules
                             address = (string)reader["ADDRESS"],
                             phoneNo = (string)reader["PHONE_NO"],
                             creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
-
                         };
+                        customersList.Add(customer);
                     }
 
                 }
             }
- 
-            return customer;
-           
+            
+            return customersList;
+        }
+
+        public Customer GetCustomerByUserName(string userName)
+        {           
+            Customer customer = null;
+            string str = $"SELECT * FROM Customers WHERE USER_NAME = '{userName}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();                        
+                        customer = new Customer
+                        {
+                             id = (int)reader["ID"],
+                             firstName = (string)reader["FIRST_NAME"],
+                             lastName = (string)reader["LAST_NAME"],
+                             userName = (string)reader["USER_NAME"],
+                             password = (string)reader["PASSWORD"],
+                             address = (string)reader["ADDRESS"],
+                             phoneNo = (string)reader["PHONE_NO"],
+                             creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
+                        };                       
+                    }
+                }
+            }
+            return customer;         
         }
 
         public void Remove(Customer ob)
@@ -139,8 +133,7 @@ namespace FlightManagementSystem.Modules
             {
                 throw new CustomerNotExistException("This customer is not exist");
             }
-            string str = $"DELETE FROM Customers WHERE ID = {id}";
-           
+            string str = $"DELETE FROM Customers WHERE ID = {id}";         
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
@@ -150,19 +143,18 @@ namespace FlightManagementSystem.Modules
 
         public void Update(Customer ob)
         {
-            int id = ob.id;
-            Customer customer = Get(id);
+            Customer customer = Get(ob.id);
             if (customer is null)
             {
                 throw new CustomerAlreadyExistException("This customer is already exist");
             }
-            string str = string.Format($"UPDATE Customers SET FIRST_NAME = '{ob.firstName}',LAST_NAME = '{ob.lastName}',USER_NAME = '{ob.userName}', PASSWORD = '{ob.password}',Address = '{ob.address}',PHONE_NO = '{ob.phoneNo}',CREDIT_CARD_NUMBER = '{ob.creditCardNumber}' WHERE ID = {id}");
-           
+            string str = string.Format($"UPDATE Customers SET FIRST_NAME = '{ob.firstName}',LAST_NAME = '{ob.lastName}'," +
+                $"USER_NAME = '{ob.userName}', PASSWORD = '{ob.password}',Address = '{ob.address}',PHONE_NO = '{ob.phoneNo}'," +
+                $"CREDIT_CARD_NUMBER = '{ob.creditCardNumber}' WHERE ID = {ob.id}");          
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-
         }
         public void RemoveAllFromCustomers()
         {

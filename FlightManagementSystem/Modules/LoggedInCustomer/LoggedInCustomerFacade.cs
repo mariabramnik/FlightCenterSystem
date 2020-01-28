@@ -22,12 +22,13 @@ namespace FlightManagementSystem.Modules
             
         }
 
-        public Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight, int ticket_id)
+        public Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight)
         {
-            Ticket ticket = new Ticket(ticket_id,token.User.id, flight.id);
-            _ticketDAO.Add(ticket);          
+            Ticket ticket = new Ticket(0,token.User.id, flight.id);
+            int id = _ticketDAO.Add(ticket);          
             flight.remainingTickets = flight.remainingTickets - 1;
             _flightDAO.Update(flight);
+            ticket.id = id;
             return ticket;
         }
         public Flight GetFlightByIdFlight(LoginToken<Customer> token,int id)
