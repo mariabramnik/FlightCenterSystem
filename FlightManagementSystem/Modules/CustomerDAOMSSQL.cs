@@ -22,14 +22,13 @@ namespace FlightManagementSystem.Modules
         public int Add(Customer ob)
         {
             int res = 0;
-            int id = ob.id;
             Customer customer =  GetCustomerByUserName(ob.userName);
             if (customer is null)
             {
-                string str = $"INSERT INTO Customers VALUES({id},'{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}');SELECT SCOPE_IDENTITY()";
+                string str = $"INSERT INTO Customers VALUES('{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}');SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    res = (int)cmd.ExecuteScalar();
+                    Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else

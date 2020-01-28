@@ -45,7 +45,7 @@ namespace FlightManagementSystem.Modules
             _ticketDAO.RemoveAllFromTickets();
             _flightDAO.RemoveAllFromFlights();
             _airLineDAO.RemoveAllFromAirLines();
-            _flightDAO.RemoveAllFromFlights();
+            _flightStatusDAO.RemoveAllFromFlightStatus();
             _customerDAO.RemoveAllFromCustomers();
             _countryDAO.RemoveAllFromCountries();
 

@@ -53,10 +53,10 @@ namespace FlightManagementSystem.Modules
             FlightStatus flightSt = GetFlightStatusByFlightStatusName(ob.statusName);
             if (flightSt is null)
             {
-                string str = string.Format($"INSERT INTO FlightStatus VALUES({id},'{statusName}');SELECT SCOPE_IDENTITY()");
+                string str = string.Format($"INSERT INTO FlightStatus VALUES('{statusName}');SELECT SCOPE_IDENTITY()");
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    res = (int)cmd.ExecuteScalar();
+                    Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             return res;

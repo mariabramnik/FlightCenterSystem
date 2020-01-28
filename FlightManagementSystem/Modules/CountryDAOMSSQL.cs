@@ -48,16 +48,15 @@ namespace FlightManagementSystem.Modules
         }
         public int Add(Country ob)
         {
-            int res = 0;
-            int id = ob.id;
+            int res = 0;            
             string countryName = ob.countryName;
             Country country = GetByName(ob.countryName);
             if (country is null)
             {
-                string str = $"INSERT INTO Countries VALUES({id},'{countryName}');SELECT SCOPE_IDENTITY()";
+                string str = $"INSERT INTO Countries VALUES('{countryName}');SELECT SCOPE_IDENTITY();";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    res = (int)cmd.ExecuteScalar();
+                    res = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else
@@ -95,7 +94,7 @@ namespace FlightManagementSystem.Modules
         public Country GetByName(string name)
         {
             Country country = null;
-            string str = $"SELECT * FROM Countries WHERE COUNTRY_NAME = {name}";
+            string str = $"SELECT * FROM Countries WHERE COUNTRY_NAME = '{name}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())

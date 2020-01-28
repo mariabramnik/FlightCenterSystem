@@ -25,11 +25,11 @@ namespace FlightManagementSystem.Modules
             Flight fl = GetFlightByAllParametrs(ob);               
             if (fl is null)
             {
-                string str = $"INSERT INTO Flights VALUES({ob.id},{ob.airLineCompanyId},{ob.originCountryCode}," +
+                string str = $"INSERT INTO Flights VALUES({ob.airLineCompanyId},{ob.originCountryCode}," +
                     $"{ob.destinationCountryCode},'{ob.departureTime}','{ob.landingTime}',{ob.remainingTickets},{ob.flightStatusId});SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    res = (int)cmd.ExecuteScalar();
+                    Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else

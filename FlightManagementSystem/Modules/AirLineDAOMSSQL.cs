@@ -54,10 +54,10 @@ namespace FlightManagementSystem.Modules
             AirLineCompany comp = GetAirLineCompanyByName(ob.airLineName);
             if (comp is null)
             {
-                string str = $"INSERT INTO AirlineCompanies VALUES({ob.id},'{ob.airLineName}','{ob.userName}','{ob.password}',{ob.countryCode});SELECT SCOPE_IDENTITY()";
+                string str = $"INSERT INTO AirlineCompanies VALUES('{ob.airLineName}','{ob.userName}','{ob.password}',{ob.countryCode});SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    res  =(int) cmd.ExecuteScalar();
+                    res  = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else

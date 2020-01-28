@@ -110,8 +110,9 @@ namespace TestForFlightManagmentSystem
                 //ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
                 //iAirlineCompanyFS.GetAllFlights();
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                Country country = new Country(1, "Israel");
-                iAdminFS.CreateCountry(ltAdmin, country);
+                Country country = new Country(0, "Israel");
+                int newCountryId = iAdminFS.CreateCountry(ltAdmin, country);
+                country.id = newCountryId;
                 if (country == iAdminFS.GetCountryByName(ltAdmin, "Israel"))
                 {
                     actual = true;
@@ -128,20 +129,21 @@ namespace TestForFlightManagmentSystem
             LoginToken<Administrator> ltAdmin = null;
             bool res = ls.TryAdminLogin("9999", "admin", out ltAdmin);
             if (res == true)
-            {
-                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
-                ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                Country country = new Country(2, "Latvia");
-                iAdminFS.CreateCountry(ltAdmin, country);
-                if (country == iAdminFS.GetCountryByName(ltAdmin, "Latvia"))
+                if (res == true)
                 {
-                    actual = true;
+                    FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                    ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
+                    Country country = new Country();
+                    country.countryName = "Latvia";
+                    int newCountryId = iAdminFS.CreateCountry(ltAdmin, country);
+                    country.id = newCountryId;
+                    if (country == iAdminFS.GetCountryByName(ltAdmin, "Latvia"))
+                    {
+                        actual = true;
+                    }
+                    Assert.IsTrue(actual);
                 }
-                Assert.IsTrue(actual);
-            }
         }
-
-
         //Admin add new airLineCompany;
         [TestMethod]
         public void ADD_AIRLINECOMPANY()
@@ -158,7 +160,6 @@ namespace TestForFlightManagmentSystem
                 airLineComp.airLineName = "BramnikAirLine";
                 airLineComp.userName = "BramnikAdmin";
                 airLineComp.password = "bramnik";
-                airLineComp.id = 1;
                 airLineComp.countryCode = 1;
                 iAdminFS.CreateNewairLine(ltAdmin, airLineComp);
                 if (airLineComp == iAdminFS.GetAirLineCompanyByName(ltAdmin, "BramnikAirLine"))

@@ -100,11 +100,9 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
             bool resLogin = ls.TryAdminLogin("9999", "admin", out ltAdmin);
             if (resLogin == true)
             {
-                ILoggedInAdministratorFacade iLoggedAdminFacade = GetFacade<ILoggedInAdministratorFacade>();
                 while (!_disposed)
                 {
                     //Debug.WriteLine("Executed: {0}", _executeCntr);
-                    iLoggedAdminFacade.TransferElapsedFlightsToHistory(ltAdmin);
                     try
                     {
                         Thread.Sleep(_timeout);
@@ -113,6 +111,8 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
                     {
                         break;
                     }
+                    ILoggedInAdministratorFacade iLoggedAdminFacade = GetFacade<ILoggedInAdministratorFacade>();
+                    iLoggedAdminFacade.TransferElapsedFlightsToHistory(ltAdmin);
                 }
             }
         }

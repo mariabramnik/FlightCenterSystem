@@ -25,10 +25,10 @@ namespace FlightManagementSystem.Modules
             Ticket ticket = GetTicketByAllParametrs(ob);
             if (ticket is null)
             {
-                string str = string.Format($"INSERT INTO Tickets VALUES({ob.id},{ob.flightId},{ob.customerId});SELECT SCOPE_IDENTITY()");
+                string str = string.Format($"INSERT INTO Tickets VALUES({ob.flightId},{ob.customerId});SELECT SCOPE_IDENTITY()");
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    res = (int)cmd.ExecuteScalar();
+                    Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else
