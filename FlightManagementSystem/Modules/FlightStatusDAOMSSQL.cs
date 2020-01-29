@@ -56,7 +56,7 @@ namespace FlightManagementSystem.Modules
                 string str = string.Format($"INSERT INTO FlightStatus VALUES('{statusName}');SELECT SCOPE_IDENTITY()");
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    Convert.ToInt32(cmd.ExecuteScalar());
+                    res = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             return res;
@@ -176,6 +176,27 @@ namespace FlightManagementSystem.Modules
                 res = true;
             }
             return res;
+        }
+        public FlightStatus GetFlightStatusByName(string statusName)
+        {
+            FlightStatus flStatus = null;
+            string str = $"SELECT * FROM FlightStatus WHERE STATUS_NAME = '{statusName}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        flStatus = new FlightStatus
+                        {
+                            id = (int)reader["ID"],
+                            statusName = (string)reader["STATUS_NAME"]
+                        };
+                    }
+                }
+            }
+            return flStatus;
         }
     }
 }

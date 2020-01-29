@@ -17,6 +17,7 @@ namespace FlightManagementSystem.Modules
         IList<Flight>GetFlightsByDesinationCountry(int countryCode);
         IList<Flight>GetFlightsByLandingDate(DateTime dateTimeLanding);
         IList<Flight>GetFlightsByOriginCountry(int countryCode);
+        Country GetCountryByName(string name);
     }
 
 }

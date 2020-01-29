@@ -15,7 +15,7 @@ namespace FlightManagementSystem.Modules
         List<Flight> GetFlightsByDepartureTime(DateTime datetime);
         List<Flight> GetFlightsByDestinationCountry(Country country);
         List<Flight> GetFlightsByLandingTime(DateTime datetime);
-        List<Flight> GetFlightsByOriginCountryCode(Country country);
+        List<Flight> GetFlightsByOriginCountry(Country country);
         void RemoveAllFromFlights();
         bool IfTableFlightsIsEmpty();
         Flight GetFlightByAllParametrs(Flight flight);

@@ -49,7 +49,11 @@ namespace FlightManagementSystem.Modules
         public IList<Flight> GetFlightsByOriginCountry(int countryCode)
         {
             Country country = _countryDAO.Get(countryCode);
-            return _flightDAO.GetFlightsByOriginCountryCode(country);
+            return _flightDAO.GetFlightsByOriginCountry(country);
+        }
+        public Country GetCountryByName(string name)
+        {
+            return _countryDAO.GetByName(name);
         }
        
     }

@@ -16,6 +16,7 @@ namespace FlightManagementSystem.Modules
         bool IfTableTicketsIsEmpty();
         Flight GetFlightById(int id);
         void InsertTicketToTicketHistory(Ticket ticket);
+        Ticket GetTicketByAllParametrs(int flightId, int customerId);
 
     }
 }

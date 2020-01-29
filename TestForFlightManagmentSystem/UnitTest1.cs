@@ -160,8 +160,9 @@ namespace TestForFlightManagmentSystem
                 airLineComp.airLineName = "BramnikAirLine";
                 airLineComp.userName = "BramnikAdmin";
                 airLineComp.password = "bramnik";
-                airLineComp.countryCode = 1;
-                iAdminFS.CreateNewairLine(ltAdmin, airLineComp);
+                airLineComp.countryCode = 11;
+                int id = iAdminFS.CreateNewairLine(ltAdmin, airLineComp);
+                airLineComp.id = id;
                 if (airLineComp == iAdminFS.GetAirLineCompanyByName(ltAdmin, "BramnikAirLine"))
                 {
                     actual = true;
@@ -185,9 +186,9 @@ namespace TestForFlightManagmentSystem
                 airLineComp.airLineName = "KramnikAirLine";
                 airLineComp.userName = "KramnikAdmin";
                 airLineComp.password = "kramnik";
-                airLineComp.id = 2;
-                airLineComp.countryCode = 1;
-                iAdminFS.CreateNewairLine(ltAdmin, airLineComp);
+                airLineComp.countryCode = 12;
+                int id = iAdminFS.CreateNewairLine(ltAdmin, airLineComp);
+                airLineComp.id = id;
                 if (airLineComp == iAdminFS.GetAirLineCompanyByName(ltAdmin, "KramnikAirLine"))
                 {
                     actual = true;
@@ -209,14 +210,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                AirLineCompany airLineComp = new AirLineCompany();
+                AirLineCompany airLineComp = iAdminFS.GetAirLineCompanyByName(ltAdmin,"BramnikAirLine");
                 airLineComp.airLineName = "BramnikAirLineCompany";
-                airLineComp.userName = "BramnikAdmin";
-                airLineComp.password = "bramnik";
-                airLineComp.id = 1;
-                airLineComp.countryCode = 1;
                 iAdminFS.UpdateAirLineDetails(ltAdmin, airLineComp);
-                if (airLineComp == iAdminFS.GetAirLineCompanyById(ltAdmin, 1))
+                if (airLineComp == iAdminFS.GetAirLineCompanyById(ltAdmin, airLineComp.id))
                 {
                     actual = true;
                 }
@@ -235,9 +232,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                Customer customer = new Customer(1, "Naty", "kazman", "Naty", "121212", "Riga", "+3713456473", "1234567876543212");
-                iAdminFS.CreateNewCustomer(ltAdmin, customer);
-                if (customer == iAdminFS.GetCustomerByid(ltAdmin, 1))
+                Customer customer = new Customer(0,"Naty", "kazman", "Naty", "121212", "Riga", "+3713456473", "1234567876543212");
+                int id = iAdminFS.CreateNewCustomer(ltAdmin, customer);
+                customer.id = id;
+                if (customer == iAdminFS.GetCustomerByid(ltAdmin, id))
                 {
                     actual = true;
                 }
@@ -257,9 +255,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                Customer customer = new Customer(2, "Inna", "Kibetz", "inna34", "0021", "oooooo1", "+9723488473", "11133355577767");
-                iAdminFS.CreateNewCustomer(ltAdmin, customer);
-                if (customer == iAdminFS.GetCustomerByid(ltAdmin, 2))
+                Customer customer = new Customer(0, "Inna", "Kibetz", "inna34", "0021", "oooooo1", "+9723488473", "11133355577767");
+                int id = iAdminFS.CreateNewCustomer(ltAdmin, customer);
+                customer.id = id;
+                if (customer == iAdminFS.GetCustomerByid(ltAdmin, id))
                 {
                     actual = true;
                 }
@@ -267,7 +266,6 @@ namespace TestForFlightManagmentSystem
                 Assert.IsTrue(actual);
             }
         }
-
         //Admin update customer
         [TestMethod]
         public void UPDATE_CUSTOMER()
@@ -280,9 +278,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                Customer customer = new Customer(1, "Naty", "kazman", "Naty", "121212", "Riga", "+371555555", "1234567876543212");
+                Customer customer = iAdminFS.GetCustomerByUserName(ltAdmin, "inna34");
+                customer.userName = "inna35";
                 iAdminFS.UpdateCustomerDetails(ltAdmin, customer);
-                if (customer == iAdminFS.GetCustomerByid(ltAdmin, 1))
+                if (customer == iAdminFS.GetCustomerByid(ltAdmin, customer.id))
                 {
                     actual = true;
                 }
@@ -302,9 +301,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                Customer customer = new Customer(1, "Naty", "kazman", "Naty", "121212", "Riga", "+371555555", "1234567876543212");
+                Customer customer = iAdminFS.GetCustomerByUserName(ltAdmin,"inna34");
                 iAdminFS.RemoveCustomer(ltAdmin, customer);
-                if (iAdminFS.CheckIfCustomersTableIsEmpty(ltAdmin))
+                Customer customerCheck = iAdminFS.GetCustomerByUserName(ltAdmin, "inna34");
+                if (!(customer is null) && (customerCheck is null))
                 {
                     actual = true;
                 }
@@ -324,14 +324,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                AirLineCompany airLineComp = new AirLineCompany();
-                airLineComp.airLineName = "BramnikAirLineCompany";
-                airLineComp.userName = "BramnikAdmin";
-                airLineComp.password = "bramnik";
-                airLineComp.id = 1;
-                airLineComp.countryCode = 1;
+                AirLineCompany airLineComp = iAdminFS.GetAirLineCompanyByName(ltAdmin, "BramnikAirLineCompany");               
                 iAdminFS.RemoveAirLine(ltAdmin, airLineComp);
-                if (iAdminFS.CheckIfAirlinesTableIsEmpty(ltAdmin))
+                AirLineCompany airLineCompCheck = iAdminFS.GetAirLineCompanyByName(ltAdmin, "BramnikAirLineCompany");
+                if (!(airLineComp is null)  &&  (airLineCompCheck is null))
                 {
                     actual = true;
                 }
@@ -351,9 +347,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                FlightStatus flStatus = new FlightStatus(1, "panding");
-                iAdminFS.CreateFlightStatus(ltAdmin, flStatus);
-                if (flStatus == iAdminFS.GetFlightStatusById(ltAdmin, 1))
+                FlightStatus flStatus = new FlightStatus(0, "panding");
+                int id = iAdminFS.CreateFlightStatus(ltAdmin, flStatus);
+                flStatus.id = id;
+                if (flStatus == iAdminFS.GetFlightStatusById(ltAdmin, id))
                 {
                     actual = true;
                 }
@@ -373,9 +370,10 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                FlightStatus flStatus = new FlightStatus(2, "landing");
-                iAdminFS.CreateFlightStatus(ltAdmin, flStatus);
-                if (flStatus == iAdminFS.GetFlightStatusById(ltAdmin, 2))
+                FlightStatus flStatus = new FlightStatus(0, "landing");
+                int id = iAdminFS.CreateFlightStatus(ltAdmin, flStatus);
+                flStatus.id = id;
+                if (flStatus == iAdminFS.GetFlightStatusById(ltAdmin, id))
                 {
                     actual = true;
                 }
@@ -389,13 +387,19 @@ namespace TestForFlightManagmentSystem
         [TestMethod]
         public void GetAllAirLineCompanies()
         {
+            bool actual = false;
             FlyingCenterSystem fs = FlyingCenterSystem.Instance;
             IAnonymousUserFacade iAnonym = fs.GetFacade<IAnonymousUserFacade>();
             IList<AirLineCompany> list = iAnonym.GetAllAirLineCompanies();
-            AirLineCompany comp1 = new AirLineCompany(1, "BramnikAirLineCompany", "BramnikAdmin", "bramnik", 1);
-            AirLineCompany comp2 = new AirLineCompany(2, "KramnikAirLineCompany", "KramnikAdmin", "kramnik", 1);
-            List<AirLineCompany> originList = new List<AirLineCompany>() { comp1, comp2 };
-            bool actual = list.SequenceEqual(originList);
+            List<string> compNameList = new List<string>();
+            foreach(AirLineCompany comp in list)
+            {
+                compNameList.Add(comp.airLineName);
+            }
+            if(compNameList.Contains("KramnikAirLine") && compNameList.Contains("BramnikAirLine"))
+            {
+                actual = true;
+            }
             Assert.IsTrue(actual);
         }
         //Testing AirLineFacade
@@ -411,11 +415,16 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                DateTime dt1 = new DateTime(2020, 2, 20, 10, 20, 00);
-                DateTime dt2 = new DateTime(2020, 2, 20, 18, 10, 00);
-                Flight flight = new Flight(1, 1, 1, 2, dt1, dt2, 100);
-                iAirlineCompanyFS.CreateFlight(ltAirLine, flight);
-                if (flight == iAirlineCompanyFS.GetFlightByID(ltAirLine, 1))
+                DateTime deppartTime = new DateTime(2020, 2, 20, 10, 20, 00);
+                DateTime landingTime = new DateTime(2020, 2, 20, 18, 10, 00);
+                Country country1 = iAirlineCompanyFS.GetCountryByName(ltAirLine,"Israel");
+                Country country2 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Latvia");
+                FlightStatus flStatus = iAirlineCompanyFS.GetFlightStatusByName(ltAirLine,"panding");
+                Flight flight = new Flight(0, ltAirLine.User.id,country1.id, country2.id, deppartTime, landingTime, 100);
+                flight.flightStatusId = flStatus.id;
+                int id = iAirlineCompanyFS.CreateFlight(ltAirLine, flight);
+                flight.id = id;
+                if (flight == iAirlineCompanyFS.GetFlightByID(ltAirLine, id))
                 {
                     actual = true;
                 }
@@ -436,11 +445,16 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                DateTime dt1 = new DateTime(2020, 2, 21, 16, 15, 00);
-                DateTime dt2 = new DateTime(2020, 2, 21, 08, 05, 00);
-                Flight flight = new Flight(2, 1, 2, 1, dt1, dt2, 120);
-                iAirlineCompanyFS.CreateFlight(ltAirLine, flight);
-                if (flight == iAirlineCompanyFS.GetFlightByID(ltAirLine, 2))
+                DateTime departTime = new DateTime(2020, 2, 21, 16, 15, 00);
+                DateTime landingTime = new DateTime(2020, 2, 21, 08, 05, 00);
+                Country country1 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Israel");
+                Country country2 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Latvia");
+                FlightStatus flStatus = iAirlineCompanyFS.GetFlightStatusByName(ltAirLine, "panding");
+                Flight flight = new Flight(0, ltAirLine.User.id, country2.id, country1.id, departTime, landingTime, 120);
+                flight.flightStatusId = flStatus.id;
+                int id = iAirlineCompanyFS.CreateFlight(ltAirLine, flight);
+                flight.id = id;
+                if(flight == iAirlineCompanyFS.GetFlightByID(ltAirLine, id))
                 {
                     actual = true;
                 }
@@ -462,16 +476,15 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInCustomerFacade iCustomerFS = fs.GetFacade<ILoggedInCustomerFacade>();
-      
-                Ticket ticket = new Ticket(1,1,2);
-                Flight flight = iCustomerFS.GetFlightByIdFlight(ltCustomer,1);
-                iCustomerFS.PurchaseTicket(ltCustomer,flight);
-                IList<Flight> listFlights = new List<Flight>();
-                IList<Flight> originFlights = new List<Flight>();
-                originFlights.Add(flight);
-                listFlights = iCustomerFS.GetAllMyFlights(ltCustomer);
-                actual = originFlights.SequenceEqual(listFlights);
-
+                Country country1 = iCustomerFS.GetCountryByName(ltCustomer, "Israel");
+                List<Flight> list = iCustomerFS.GetFlightsByOriginCountry(ltCustomer, country1);
+                Flight fl = list[0];
+                // Ticket ticket = new Ticket(0, fl.id,ltCustomer.User.id));               
+                Ticket ticket = iCustomerFS.PurchaseTicket(ltCustomer,fl);
+                if(ticket == iCustomerFS.GetTicketByAllParametrs(ltCustomer,fl.id,ltCustomer.User.id))
+                {
+                    actual = true;
+                }
                 Assert.IsTrue(actual);
             }
 

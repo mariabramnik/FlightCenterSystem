@@ -22,6 +22,7 @@ namespace FlightManagementSystem.Modules
         Country GetCountryByName(LoginToken<Administrator> token, string name);
         AirLineCompany GetAirLineCompanyById(LoginToken<Administrator> token, int id);
         Customer GetCustomerByid(LoginToken<Administrator> token, int id);
+        Customer GetCustomerByUserName(LoginToken<Administrator> token, string userName);
         bool CheckIfCustomersTableIsEmpty(LoginToken<Administrator> token);
         bool CheckIfAirlinesTableIsEmpty(LoginToken<Administrator> token);
         int CreateFlightStatus(LoginToken<Administrator> token, FlightStatus flStatus);

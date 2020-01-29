@@ -26,10 +26,10 @@ namespace FlightManagementSystem.Modules
             if (fl is null)
             {
                 string str = $"INSERT INTO Flights VALUES({ob.airLineCompanyId},{ob.originCountryCode}," +
-                    $"{ob.destinationCountryCode},'{ob.departureTime}','{ob.landingTime}',{ob.remainingTickets},{ob.flightStatusId});SELECT SCOPE_IDENTITY()";
+                    $"{ob.destinationCountryCode},'{ob.departureTime}','{ob.landingTime}',{ob.remainingTickets},{ob.flightStatusId});SELECT SCOPE_IDENTITY();";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    Convert.ToInt32(cmd.ExecuteScalar());
+                   res =  Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else
@@ -42,9 +42,9 @@ namespace FlightManagementSystem.Modules
         public Flight GetFlightByAllParametrs(Flight flight)
         {
             Flight fl = null;
-            string str = $"SELECT * FROM Flights WHERE AIRLINECOMPANY_ID = {flight.airLineCompanyId}," +
-                $"ORIGIN_COUNTRY_CODE = {flight.originCountryCode},DESTINATION_COUNTRY_CODE = {flight.destinationCountryCode}," +
-                $"DEPARTURE_TIME = '{flight.departureTime}',LANDING_TIME = '{flight.landingTime}'";
+            string str = $"SELECT * FROM Flights WHERE AIRLINECOMPANY_ID = {flight.airLineCompanyId} AND " +
+                $"ORIGIN_COUNTRY_CODE = {flight.originCountryCode} AND DESTINATION_COUNTRY_CODE = {flight.destinationCountryCode} AND " +
+                $"DEPARTURE_TIME = '{flight.departureTime}' AND LANDING_TIME = '{flight.landingTime}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -66,7 +66,7 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
-            return flight;
+            return fl;
         }
 
         public Dictionary<Flight, int> GetAllFlightsVacancy()
@@ -248,7 +248,7 @@ namespace FlightManagementSystem.Modules
             return flByLandingTime;
         }
 
-        public List<Flight> GetFlightsByOriginCountryCode(Country country)
+        public List<Flight> GetFlightsByOriginCountry(Country country)
         {
             List<Flight> flByOriginCountry = new List<Flight>();
             Flight fl = null;
@@ -336,7 +336,7 @@ namespace FlightManagementSystem.Modules
             }
             string str = string.Format($"UPDATE Flights SET AIRLINECOMPANY_ID = {ob.airLineCompanyId},ORIGIN_COUNTRY_CODE = {ob.originCountryCode}, " +
                 $"DESTINATION_COUNTRY_CODE = {ob.destinationCountryCode}, DEPARTURE_TIME = '{ob.departureTime}', LANDING_TIME = '{ob.landingTime}', " +
-                $"REMAINING_TIME = {ob.remainingTickets}, FLIGHT_STATUS_ID = {ob.flightStatusId} WHERE ID = {ob.id}");
+                $"REMAINING_TICKETS = {ob.remainingTickets}, FLIGHT_STATUS_ID = {ob.flightStatusId} WHERE ID = {ob.id}");
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();

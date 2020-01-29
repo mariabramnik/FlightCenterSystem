@@ -22,13 +22,13 @@ namespace FlightManagementSystem.Modules
         public int Add(Ticket ob)
         {
             int res = 0;
-            Ticket ticket = GetTicketByAllParametrs(ob);
+            Ticket ticket = GetTicketByAllParametrs(ob.flightId,ob.customerId);
             if (ticket is null)
             {
                 string str = string.Format($"INSERT INTO Tickets VALUES({ob.flightId},{ob.customerId});SELECT SCOPE_IDENTITY()");
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    Convert.ToInt32(cmd.ExecuteScalar());
+                    res = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else
@@ -66,10 +66,10 @@ namespace FlightManagementSystem.Modules
             }
             return ticket;
         }
-        public Ticket GetTicketByAllParametrs(Ticket ticket)
+        public Ticket GetTicketByAllParametrs(int flightId,int customerId)
         {
             Ticket tick = null;
-            string str = $"SELECT * FROM Tickets WHERE FLIGHT_ID = {ticket.flightId} AND CUSTOMER_ID = {ticket.customerId}";
+            string str = $"SELECT * FROM Tickets WHERE FLIGHT_ID = {flightId} AND CUSTOMER_ID = {customerId}";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())

@@ -20,6 +20,10 @@ namespace FlightManagementSystem.Modules
             int res = _customerDAO.Add(customer);
             return res;
         }
+        public Customer GetCustomerByUserName(LoginToken<Administrator> token,string userName)
+        {
+           return _customerDAO.GetCustomerByUserName(userName);
+        }
 
         public void RemoveAirLine(LoginToken<Administrator> token, AirLineCompany comp)
         {

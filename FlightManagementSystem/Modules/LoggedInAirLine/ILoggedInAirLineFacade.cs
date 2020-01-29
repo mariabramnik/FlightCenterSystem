@@ -17,6 +17,8 @@ namespace FlightManagementSystem.Modules
         void ChangeMyPassword(LoginToken<AirLineCompany> token, string oldPassword, string newPassword);
         void ModifyAirLineDetails(LoginToken<AirLineCompany> token, AirLineCompany airline);
         Flight GetFlightByID(LoginToken<AirLineCompany> token, int id);
+        Country GetCountryByName(LoginToken<AirLineCompany> token,string countryName);
+        FlightStatus GetFlightStatusByName(LoginToken<AirLineCompany> token, string statusName);
 
 
     }

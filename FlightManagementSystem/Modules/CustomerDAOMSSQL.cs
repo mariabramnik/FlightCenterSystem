@@ -28,7 +28,7 @@ namespace FlightManagementSystem.Modules
                 string str = $"INSERT INTO Customers VALUES('{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}');SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
-                    Convert.ToInt32(cmd.ExecuteScalar());
+                    res = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
             else

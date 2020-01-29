@@ -51,9 +51,20 @@ namespace FlightManagementSystem.Modules
         {
             _flightDAO.Update(flight);
         }
+
         public Flight GetFlightByID(LoginToken<AirLineCompany> token,int id)
         {
            return  _flightDAO.GetFlightById(id);
+        }
+
+        public Country GetCountryByName(LoginToken<AirLineCompany> token,string countryName)
+        {
+           return  _countryDAO.GetByName(countryName);
+        }
+
+        public FlightStatus GetFlightStatusByName(LoginToken<AirLineCompany> token, string statusName)
+        {
+            return _flightStatusDAO.GetFlightStatusByName(statusName);
         }
     }
 }
