@@ -10,16 +10,12 @@ namespace FlightManagementSystem.Modules
 {
     public class LoggedInCustomerFacade : AnonymousUserFacade, ILoggedInCustomerFacade
     {
-        public void CancelTicket(LoginToken<Customer> token, Ticket ticket)
-        {
-            _ticketDAO.Remove(ticket);
-        }
-
         public IList<Flight> GetAllMyFlights(LoginToken<Customer> token)
         {
-            int id = token.User.id;
-            return _ticketDAO.GetFlightsByCustomer(id);
-            
+            List<Flight> listFlightByCustomer = new List<Flight>();
+            listFlightByCustomer = _flightDAO.GetFlightsByCustomer(token.User);
+            return listFlightByCustomer;
+
         }
 
         public Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight)
@@ -45,12 +41,6 @@ namespace FlightManagementSystem.Modules
             Dictionary<Flight, int> dictFlightIntVac = new Dictionary<Flight, int>();
             dictFlightIntVac =  _flightDAO.GetAllFlightsVacancy();
             return dictFlightIntVac;
-        }
-        public List<Flight> GetFlightsByCustomer(LoginToken<Customer> token,Customer customer)
-        {
-            List<Flight> listFlightByCustomer = new List<Flight>();
-            listFlightByCustomer = _flightDAO.GetFlightsByCustomer(customer);
-            return listFlightByCustomer;
         }
         public List<Flight> GetFlightsByDepartureTime(LoginToken<Customer> token,DateTime datetime)
         {
@@ -79,6 +69,14 @@ namespace FlightManagementSystem.Modules
         public Ticket GetTicketByAllParametrs(LoginToken<Customer> token,int flightId,int customerId)
         {
            return _ticketDAO.GetTicketByAllParametrs(flightId, customerId);
+        }
+        public void RemoveTicket(LoginToken<Customer> token, Ticket ticket)
+        {
+            _ticketDAO.Remove(ticket);
+            Flight flight = _ticketDAO.GetFlightById(ticket.flightId);
+            flight.remainingTickets = flight.remainingTickets + 1;
+            _flightDAO.Update(flight);
+
         }
     }
     

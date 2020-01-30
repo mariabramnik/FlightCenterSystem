@@ -129,7 +129,6 @@ namespace TestForFlightManagmentSystem
             LoginToken<Administrator> ltAdmin = null;
             bool res = ls.TryAdminLogin("9999", "admin", out ltAdmin);
             if (res == true)
-                if (res == true)
                 {
                     FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                     ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
@@ -144,6 +143,53 @@ namespace TestForFlightManagmentSystem
                     Assert.IsTrue(actual);
                 }
         }
+        //Admin add new Country;
+        [TestMethod]
+        public void ADD_COUNTRY3()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<Administrator> ltAdmin = null;
+            bool res = ls.TryAdminLogin("9999", "admin", out ltAdmin);
+            if (res == true)
+            {
+                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
+                Country country = new Country();
+                country.countryName = "Germany";
+                int newCountryId = iAdminFS.CreateCountry(ltAdmin, country);
+                country.id = newCountryId;
+                if (country == iAdminFS.GetCountryByName(ltAdmin, "Germany"))
+                {
+                    actual = true;
+                }
+                Assert.IsTrue(actual);
+            }
+        }
+
+
+        //
+        [TestMethod]
+        public void GET_COUNTRY_BY_NAME()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<Administrator> ltAdmin = null;
+            bool res = ls.TryAdminLogin("9999", "admin", out ltAdmin);
+                if (res == true)
+                {
+                    FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                    ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
+                    List<Country> listCountries = iAdminFS.GetAllCountries();
+                    string name = listCountries[0].countryName;
+                    if(listCountries[0] == iAdminFS.GetCountryByName(name))
+                    {
+                        actual = true;
+                    }
+                    Assert.IsTrue(actual);
+                }
+        }
+
         //Admin add new airLineCompany;
         [TestMethod]
         public void ADD_AIRLINECOMPANY()
@@ -381,11 +427,54 @@ namespace TestForFlightManagmentSystem
                 Assert.IsTrue(actual);
             }
         }
+        // 
+        [TestMethod]
+        public void GET_AIRLINE_BY_NAME()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<Administrator> ltAdmin = null;
+            bool res = ls.TryAdminLogin("9999", "admin", out ltAdmin);
+            if (res == true)
+            {
+                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
+                IList<AirLineCompany> list = iAdminFS.GetAllAirLineCompanies();
+                string airLineName = list[0].airLineName;
+                AirLineCompany comp = iAdminFS.GetAirLineCompanyByName(ltAdmin, airLineName);
+                if (comp == list[0])
+                {
+                    actual = true;
+                }
+            }
+            Assert.IsTrue(actual);
+        }
 
+        [TestMethod]
+        public void GET_AIRLINE_BY_ID()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<Administrator> ltAdmin = null;
+            bool res = ls.TryAdminLogin("9999", "admin", out ltAdmin);
+            if (res == true)
+            {
+                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
+                IList<AirLineCompany> list = iAdminFS.GetAllAirLineCompanies();
+                int airLineId = list[0].id;
+                AirLineCompany comp = iAdminFS.GetAirLineCompanyById(ltAdmin, airLineId);
+                if (comp == list[0])
+                {
+                    actual = true;
+                }
+            }
+            Assert.IsTrue(actual);
+        }
 
         // Testing AnonimousFacade
         [TestMethod]
-        public void GetAllAirLineCompanies()
+        public void GET_ALL_AIRLINECOMPANIES()
         {
             bool actual = false;
             FlyingCenterSystem fs = FlyingCenterSystem.Instance;
@@ -433,6 +522,35 @@ namespace TestForFlightManagmentSystem
             }
 
         }
+        //
+        [TestMethod]
+        public void UPADATE_FLIGHT()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<AirLineCompany> ltAirLine = null;
+            bool res = ls.TryAirLineLogin("kramnik", "KramnikAdmin", out ltAirLine);
+            if (res == true)
+            {
+                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
+                IList<Flight> listFlight = iAirlineCompanyFS.GetAllAirLineCompaniesFlights(ltAirLine);
+                if(listFlight.Count > 0)
+                {
+                    Flight flight = listFlight[0];
+                    int flightId = flight.id;
+                    DateTime newDepartTime = new DateTime(2020, 2, 21, 17, 15, 00);
+                    flight.departureTime = newDepartTime;
+                    iAirlineCompanyFS.UpdateFlight(ltAirLine,flight);
+                    if(iAirlineCompanyFS.GetFlightByID(ltAirLine,flightId) == flight)
+                    {
+                        actual = true;
+                    }
+                }
+            }
+            Assert.IsTrue(actual);
+        }
+
         //Airline create Flight
         [TestMethod]
         public void CREATE_FLIGHT2()
@@ -463,6 +581,30 @@ namespace TestForFlightManagmentSystem
             }
 
         }
+        //Airline remove Flight
+        [TestMethod]
+        public void REMOVE_FLIGHT()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<AirLineCompany> ltAirLine = null;
+            bool res = ls.TryAirLineLogin("kramnik", "KramnikAdmin", out ltAirLine);
+            if (res == true)
+            {
+                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
+                IList<Flight> flList = iAirlineCompanyFS.GetAllAirLineCompaniesFlights(ltAirLine);
+                Flight flight = flList[0];
+                iAirlineCompanyFS.CancelFlight(ltAirLine, flight);
+                Flight flightCheck = iAirlineCompanyFS.GetFlightByID(ltAirLine,flight.id);
+                if (!(flight is null) && (flightCheck is null))
+                {
+                    actual = true;
+                }
+            }
+            Assert.IsTrue(actual);
+        }
+
         //Testing CustomerFacade
         //Customer create Ticket
         [TestMethod]
@@ -487,7 +629,29 @@ namespace TestForFlightManagmentSystem
                 }
                 Assert.IsTrue(actual);
             }
-
+        }//Remove Ticket
+        [TestMethod]
+        public void REMOVE_TICKET_ACTUAL_TRUE()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<Customer> ltCustomer = null;
+            bool res = ls.TryCustomerLogin("0021", "inna34", out ltCustomer);
+            if (res == true)
+            {
+                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                ILoggedInCustomerFacade iCustomerFS = fs.GetFacade<ILoggedInCustomerFacade>();
+                IList<Flight> listCustFlights = iCustomerFS.GetAllMyFlights(ltCustomer);
+                int flightId = listCustFlights[0].id;
+                Ticket ticket = iCustomerFS.GetTicketByAllParametrs(ltCustomer,flightId, ltCustomer.User.id);
+                iCustomerFS.RemoveTicket(ltCustomer,ticket);
+                Ticket ticketCheck = iCustomerFS.GetTicketByAllParametrs(ltCustomer, flightId, ltCustomer.User.id);
+                if(!(ticket is null) && ticketCheck is null)
+                {
+                    actual = true;
+                }
+            }
+            Assert.IsTrue(actual);
         }
     }
 }

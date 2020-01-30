@@ -23,7 +23,9 @@ namespace FlightManagementSystem.Modules
         void InsertElapsedFlightsToHistory(List<Flight> flightList);
         void AddFlightToHistoryTable(Flight ob);
         void DeleteElapsedFlightsFromFlights(List<Flight> flightList);
-   
+        List<Flight> GetFlightsByAirLineCompany(AirLineCompany company);
+
+
 
     }
 }

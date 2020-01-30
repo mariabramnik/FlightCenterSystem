@@ -119,11 +119,12 @@ namespace FlightManagementSystem.Modules
             {
                 throw new TicketAlreadyExistException("This ticketis is already exist");
             }
-            string str = string.Format($"DELETE FROM Tickets WHERE ID = {ob.id})");
+            string str = $"DELETE FROM Tickets WHERE ID = {ob.id}";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
+  
         }
 
         public Flight GetFlightById(int id)
@@ -249,5 +250,6 @@ namespace FlightManagementSystem.Modules
                 cmd.ExecuteNonQuery();
             }
         }
+
     }
 }

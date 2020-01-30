@@ -51,10 +51,17 @@ namespace FlightManagementSystem.Modules
             Country country = _countryDAO.Get(countryCode);
             return _flightDAO.GetFlightsByOriginCountry(country);
         }
+
         public Country GetCountryByName(string name)
         {
             return _countryDAO.GetByName(name);
         }
-       
+
+        public  List<Country> GetAllCountries()
+        {
+            List<Country> list = _countryDAO.GetAll();
+            return list;
+        }
+
     }
 }

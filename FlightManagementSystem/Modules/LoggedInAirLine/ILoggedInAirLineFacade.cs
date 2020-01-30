@@ -10,7 +10,7 @@ namespace FlightManagementSystem.Modules
    public interface ILoggedInAirLineFacade
     {
         List<Ticket> GetAllTickets(LoginToken<AirLineCompany> token);
-        IList<Flight> GetAllFlights(LoginToken<AirLineCompany> token);
+        IList<Flight> GetAllAirLineCompaniesFlights(LoginToken<AirLineCompany> token);
         void CancelFlight(LoginToken<AirLineCompany> token, Flight flight);
         int CreateFlight(LoginToken<AirLineCompany>token, Flight flight);
         void UpdateFlight(LoginToken<AirLineCompany> token, Flight flight);
@@ -19,6 +19,8 @@ namespace FlightManagementSystem.Modules
         Flight GetFlightByID(LoginToken<AirLineCompany> token, int id);
         Country GetCountryByName(LoginToken<AirLineCompany> token,string countryName);
         FlightStatus GetFlightStatusByName(LoginToken<AirLineCompany> token, string statusName);
+        List<Ticket> GetAllTicketByFlight(LoginToken<AirLineCompany> token, Flight flight);
+        void RemoveTicket(LoginToken<AirLineCompany> token, Ticket ticket);
 
 
     }

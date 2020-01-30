@@ -278,6 +278,36 @@ namespace FlightManagementSystem.Modules
             return flByOriginCountry;
         }
 
+        public List<Flight> GetFlightsByAirLineCompany(AirLineCompany company)
+        {
+            List<Flight> flByOriginCountry = new List<Flight>();
+            Flight fl = null;
+            string str = $"SELECT* FROM Flights WHERE AIRLINECOMPANY_ID = {company.id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        flByOriginCountry.Add(fl);
+
+                    }
+                }
+            }
+            return flByOriginCountry;
+        }
+
         public Flight Get(int id)
         {
             Flight fl = GetFlightById(id);
@@ -317,15 +347,42 @@ namespace FlightManagementSystem.Modules
          Flight fl = GetFlightById(ob.id);
          if(fl is null)
          {
-                throw new FlightNotExistException("this flight not exist in system");
+            throw new FlightNotExistException("this flight not exist in system");
          }
-        string str = string.Format($"DELETE FROM Flights WHERE ID = {ob.id})");
+        List<Ticket> ticketList = GetTicketsByFlight(ob.id);
+        foreach(Ticket ticket in ticketList)
+        {
+             RemoveTicket(ticket);
+        }
+        string str = $"DELETE FROM Flights WHERE ID = {ob.id}";
         using (SqlCommand cmd = new SqlCommand(str, con))
         {
             cmd.ExecuteNonQuery();
         }
         
     }
+        public List<Ticket> GetTicketsByFlight(int id_flight)
+        {
+            List<Ticket> ticketsListByFlight = new List<Ticket>();
+            string str = $"SELECT * FROM Tickets WHERE FLIGHT_ID = {id_flight}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Ticket ticket = new Ticket
+                        {
+                            id = (int)reader["ID"],
+                            customerId = (int)reader["CUSTOMER_ID"],
+                            flightId = (int)reader["FLIGHT_ID"]
+                        };
+                        ticketsListByFlight.Add(ticket);
+                    }
+                }
+            }
+            return ticketsListByFlight;
+        }
 
         public void Update(Flight ob)
         {
@@ -343,6 +400,7 @@ namespace FlightManagementSystem.Modules
             }
 
         }
+
         public void RemoveAllFromFlights()
         {
             string str = "delete from Flights";
@@ -418,8 +476,18 @@ namespace FlightManagementSystem.Modules
             }
         }
 
-    
+        public void RemoveTicket(Ticket ob)
+        {
+            string str = $"DELETE FROM Tickets WHERE ID = {ob.id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                cmd.ExecuteNonQuery();
+            }
 
-  
+        }
+
+
+
+
     }
 }

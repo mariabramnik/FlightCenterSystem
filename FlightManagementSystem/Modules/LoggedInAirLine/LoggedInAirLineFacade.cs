@@ -31,9 +31,9 @@ namespace FlightManagementSystem.Modules
             return res;
         }
 
-        public IList<Flight> GetAllFlights(LoginToken<AirLineCompany> token)
+        public IList<Flight> GetAllAirLineCompaniesFlights(LoginToken<AirLineCompany> token)
        {
-            return _flightDAO.GetAll();
+            return _flightDAO.GetFlightsByAirLineCompany(token.User);
        }
 
         public List<Ticket> GetAllTickets(LoginToken<AirLineCompany> token)
@@ -65,6 +65,16 @@ namespace FlightManagementSystem.Modules
         public FlightStatus GetFlightStatusByName(LoginToken<AirLineCompany> token, string statusName)
         {
             return _flightStatusDAO.GetFlightStatusByName(statusName);
+        }
+        public List<Ticket> GetAllTicketByFlight(LoginToken<AirLineCompany> token, Flight flight)
+        {
+            List<Ticket> listTickets = _ticketDAO.GetTicketsByFlight(flight.id);
+            return listTickets;
+        }
+
+        public void RemoveTicket(LoginToken<AirLineCompany> token, Ticket ticket)
+        {
+            _ticketDAO.Remove(ticket);
         }
     }
 }
