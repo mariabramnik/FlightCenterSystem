@@ -20,5 +20,7 @@ namespace FlightManagementSystem.Modules
        Country GetCountryByName(LoginToken<Customer> token, string name);
        Ticket GetTicketByAllParametrs(LoginToken<Customer> token,int flightId, int customerId);
        void RemoveTicket(LoginToken<Customer> token, Ticket ticket);
+       void ChangeMyPassword(LoginToken<Customer> token, string oldPassword, string newPassword);
+        
     }
 }

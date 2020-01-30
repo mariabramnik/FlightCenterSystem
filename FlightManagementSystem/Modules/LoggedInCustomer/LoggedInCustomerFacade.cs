@@ -78,6 +78,10 @@ namespace FlightManagementSystem.Modules
             _flightDAO.Update(flight);
 
         }
+        public void ChangeMyPassword(LoginToken<Customer> token, string oldPassword, string newPassword)
+        {
+            _customerDAO.ChangeMyPassword(token.User, oldPassword, newPassword);
+        }
     }
     
 }

@@ -175,6 +175,11 @@ namespace FlightManagementSystem.Modules
             }
             return res;
         }
+        public void ChangeMyPassword(Customer customer, string oldPassword, string newPassword)
+        {
+            customer.password = newPassword;
+            Update(customer);
+        }
 
     }
 }

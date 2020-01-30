@@ -653,6 +653,47 @@ namespace TestForFlightManagmentSystem
             }
             Assert.IsTrue(actual);
         }
+    
+    // CustomerFacade Change password
+    [TestMethod]
+    public void CHANGE_PASSWORD_ACTUAL_TRUE()
+    {
+        bool actual = false;
+        LoginService ls = new LoginService();
+        LoginToken<Customer> ltCustomer = null;
+        bool res = ls.TryCustomerLogin("0021", "inna34", out ltCustomer);
+        if (res == true)
+        {
+            FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+            ILoggedInCustomerFacade iCustomerFS = fs.GetFacade<ILoggedInCustomerFacade>();
+            iCustomerFS.ChangeMyPassword(ltCustomer, ltCustomer.User.password, "newPassword");
+            if(ltCustomer.User.password == "newPassword")
+            {
+                actual = true;
+            }
+        }
+            Assert.IsTrue(actual);
+     }
+        //CustomerFacade Change password
+        [TestMethod]
+        public void CHANGE_PASSWORD_BACK_ACTUAL_TRUE()
+        {
+            bool actual = false;
+            LoginService ls = new LoginService();
+            LoginToken<Customer> ltCustomer = null;
+            bool res = ls.TryCustomerLogin("newPassword", "inna34", out ltCustomer);
+            if (res == true)
+            {
+                FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+                ILoggedInCustomerFacade iCustomerFS = fs.GetFacade<ILoggedInCustomerFacade>();
+                iCustomerFS.ChangeMyPassword(ltCustomer, ltCustomer.User.password, "0021");
+                if (ltCustomer.User.password == "0021")
+                {
+                    actual = true;
+                }
+            }
+            Assert.IsTrue(actual);
+        }
     }
 }
     
