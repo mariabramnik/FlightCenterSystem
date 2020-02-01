@@ -15,7 +15,8 @@ namespace FlightManagementSystem.Modules
         static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
         public void SQLConnectionOpen()
         {
-            con.Open();
+            if(con.State != System.Data.ConnectionState.Open)
+             con.Open();
          //   DictionaryFilling();
         }
 
@@ -44,7 +45,8 @@ namespace FlightManagementSystem.Modules
 
         public void SQLConnectionClose()
         {
-            con.Close();
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
         }
         public int Add(Country ob)
         {

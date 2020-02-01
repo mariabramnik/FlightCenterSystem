@@ -8,6 +8,7 @@ namespace FlightManagementSystem.Modules
 {
     public abstract class FacadeBase
     {
+        //in constructor creating DAO objects and DBConnection.Open in destructor DBConnectin.Close
         protected IAirLineDAO _airLineDAO;
         private AirLineDAOMSSQL __airLineDAO;
         protected ICountryDAO _countryDAO;

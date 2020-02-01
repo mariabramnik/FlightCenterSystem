@@ -17,6 +17,11 @@ namespace FlightManagementSystem.Modules
         Flight GetFlightById(int id);
         void InsertTicketToTicketHistory(Ticket ticket);
         Ticket GetTicketByAllParametrs(int flightId, int customerId);
+        List<Ticket> GetTicketsByAirLineCompany(AirLineCompany comp);
+        List<Ticket> GetAllMyTickets(int custId);
+        void RemoveAllFromTickets_History();
+        bool IfTableTickets_HistoryIsEmpty();
+        List<Ticket> GetAllTicketsFromTickets_HistoryByCustomer(Customer customer);
 
     }
 }

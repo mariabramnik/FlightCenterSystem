@@ -55,6 +55,7 @@
     <Compile Include="TestForAirlineFacade.cs" />
     <Compile Include="TestForAnanimousFacade.cs" />
     <Compile Include="TestForCustomerFacade.cs" />
+    <Compile Include="TestLoginService.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

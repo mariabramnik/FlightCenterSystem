@@ -21,8 +21,8 @@ namespace FlightManagementSystem.Modules
 
         public void ChangeMyPassword(LoginToken<AirLineCompany> token, string oldPassword, string newPassword)
         {
-           AirLineCompany comp = _airLineDAO.Get(token.User.id);           
-            _airLineDAO.Update(comp);
+            token.User.password = newPassword;        
+            _airLineDAO.Update(token.User);
         }
 
         public int CreateFlight(LoginToken<AirLineCompany> token, Flight flight)
@@ -36,9 +36,11 @@ namespace FlightManagementSystem.Modules
             return _flightDAO.GetFlightsByAirLineCompany(token.User);
        }
 
-        public List<Ticket> GetAllTickets(LoginToken<AirLineCompany> token)
+        public List<Ticket> GetAllTicketsByAirLine(LoginToken<AirLineCompany> token)
         {
-           return  _ticketDAO.GetAll();
+            List<Ticket> ticketList = new List<Ticket>();
+            ticketList =  _ticketDAO.GetTicketsByAirLineCompany(token.User);
+            return ticketList;
         }
 
         public void ModifyAirLineDetails(LoginToken<AirLineCompany> token, AirLineCompany airline)
@@ -75,6 +77,18 @@ namespace FlightManagementSystem.Modules
         public void RemoveTicket(LoginToken<AirLineCompany> token, Ticket ticket)
         {
             _ticketDAO.Remove(ticket);
+        }
+
+        public FlightStatus GetFlightstatusById(LoginToken<AirLineCompany> token, int id)
+        {
+           return _flightStatusDAO.Get(id);
+        }
+
+        public List<FlightStatus> GetAllFlightStatus(LoginToken<AirLineCompany> token)
+        {
+            List<FlightStatus> flightstatusList = new List<FlightStatus>();
+            flightstatusList =  _flightStatusDAO.GetAll();
+            return flightstatusList;
         }
     }
 }

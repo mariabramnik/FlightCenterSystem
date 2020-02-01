@@ -13,11 +13,13 @@ namespace FlightManagementSystem.Modules
         static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
         public void SQLConnectionOpen()
         {
-            con.Open();
+            if (con.State != System.Data.ConnectionState.Open)
+                con.Open();
         }
         public void SQLConnectionClose()
         {
-            con.Close();
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
         }
         public int Add(Flight ob)
         {
@@ -72,7 +74,11 @@ namespace FlightManagementSystem.Modules
         public Dictionary<Flight, int> GetAllFlightsVacancy()
         {
             Dictionary<Flight,int> vacFlights = new Dictionary<Flight, int>();
-            string str = $"SELECT * FROM Flights WHERE REMAINING_TICKETS > 0 AND FLIGHT_STATUS_ID = 1";
+            string str = $"SELECT Flights.ID,Flights.AIRLINECOMPANY_ID,Flights.ORIGIN_COUNTRY_CODE, "+
+                   " Flights.DESTINATION_COUNTRY_CODE,Flights.DEPARTURE_TIME,Flights.LANDING_TIME," +
+                   "Flights.REMAINING_TICKETS,Flights.FLIGHT_STATUS_ID FROM Flights JOIN FlightStatus " +
+                   "ON Flights.FLIGHT_STATUS_ID = FlightStatus.ID  WHERE REMAINING_TICKETS > 0 " +
+                   "AND FlightStatus.STATUS_NAME = 'panding'; ";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -409,6 +415,15 @@ namespace FlightManagementSystem.Modules
                 cmd.ExecuteNonQuery();
             }
         }
+        public void RemoveAllFromFlights_History()
+        {
+            string str = "delete from Flights_History";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         public bool IfTableFlightsIsEmpty()
         {
             bool res = false;
@@ -423,6 +438,23 @@ namespace FlightManagementSystem.Modules
             }
             return res;
         }
+        public bool IfTableFlights_HistoryIsEmpty()
+        {
+            bool res = false;
+            string str = $"SELECT COUNT(*) FROM Flights_History";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                int num = (int)cmd.ExecuteScalar();
+                if (num == 0)
+                {
+                    res = true;
+                }
+            }
+            return res;
+        }
+
+
+
         public List<Flight> SelectElapsedFlightsToHistory()
         {
             //DateTime dtCurr = DateTime.Now;
@@ -486,7 +518,60 @@ namespace FlightManagementSystem.Modules
 
         }
 
+        public List<Flight> SelectAllFromFlights_History()
+        {
+            List<Flight> listFlights = new List<Flight>();
+            Flight fl = null;
+            string str = $"SELECT* FROM Flights_History";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = 0,
+                            flightStatusId = 0,
+                        };                       
+                        listFlights.Add(fl);
 
+                    }
+                }
+            }
+            FlightStatus flStatus = GetFlightStatusByFlightStatusName("landing");
+            foreach (Flight flight in listFlights)
+            {
+                flight.flightStatusId = flStatus.id;
+            }
+            return listFlights;
+        }
+
+        public FlightStatus GetFlightStatusByFlightStatusName(string statusName)
+        {
+            FlightStatus flStatus = null;
+            string str = $"SELECT * FROM FlightStatus WHERE STATUS_NAME = '{statusName}'";
+            SqlCommand cmd = new SqlCommand(str, con);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    flStatus = new FlightStatus
+                    {
+                        id = (int)reader["ID"],
+                        statusName = (string)reader["STATUS_NAME"]
+                    };
+                }
+            }
+            return flStatus;
+        }
 
 
     }

@@ -24,6 +24,10 @@ namespace FlightManagementSystem.Modules
         void AddFlightToHistoryTable(Flight ob);
         void DeleteElapsedFlightsFromFlights(List<Flight> flightList);
         List<Flight> GetFlightsByAirLineCompany(AirLineCompany company);
+        void RemoveAllFromFlights_History();
+        bool IfTableFlights_HistoryIsEmpty();
+        List<Flight> SelectAllFromFlights_History();
+        FlightStatus GetFlightStatusByFlightStatusName(string statusName);
 
 
 

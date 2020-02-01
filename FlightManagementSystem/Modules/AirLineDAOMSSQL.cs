@@ -15,13 +15,15 @@ namespace FlightManagementSystem.Modules
         static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
         public void SQLConnectionOpen()
         {
-            con.Open();
+            if(con.State != System.Data.ConnectionState.Open)
+              con.Open();
          //   DictionarysFilling();
 
         }
         public void SQLConnectionClose()
         {
-            con.Close();
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
         }
         private void DictionarysFilling()
         {
@@ -46,8 +48,6 @@ namespace FlightManagementSystem.Modules
                 }
             }
         }
-
-
         public int Add(AirLineCompany ob)
         {
             int res = 0;
@@ -72,6 +72,8 @@ namespace FlightManagementSystem.Modules
 
         public AirLineCompany Get(int id)
         {
+            SQLConnectionOpen();
+
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE ID = {id}";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -175,8 +177,7 @@ namespace FlightManagementSystem.Modules
         }
 
         public List<AirLineCompany> GetAllAirLinesCompanyByCountry(Country country)
-        {
-            
+        {           
             List<AirLineCompany> compList = new List<AirLineCompany>() ;
             string str = $"SELECT * FROM AirlineCompanies WHERE COUNTRY_CODE = '{country.id}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -280,5 +281,6 @@ namespace FlightManagementSystem.Modules
             }
             return res;
         }
+        
     }
 }

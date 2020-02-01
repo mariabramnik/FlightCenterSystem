@@ -8,6 +8,6 @@ namespace FlightManagementSystem
 {
     class AppConfig
     {
-        public static int timeOut = 600000;
+        public static int timeOut = 600;
     }
 }

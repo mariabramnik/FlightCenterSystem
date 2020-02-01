@@ -63,5 +63,19 @@ namespace FlightManagementSystem.Modules
             return list;
         }
 
+        public List<Flight> GetAllFlightsByAirLineCompanies(AirLineCompany comp)
+        {
+            List<Flight> allFlightsByAirLine = new List<Flight>();
+            allFlightsByAirLine = _flightDAO.GetFlightsByAirLineCompany(comp);
+            return allFlightsByAirLine;
+        }
+
+        public List<Flight> GetAllFlightsByFlights_History()
+        {
+            List<Flight> listFlights = new List<Flight>();
+            listFlights = _flightDAO.SelectAllFromFlights_History();
+            return listFlights;
+        }
+
     }
 }

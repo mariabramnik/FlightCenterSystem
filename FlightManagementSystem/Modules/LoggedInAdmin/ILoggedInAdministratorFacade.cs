@@ -28,6 +28,8 @@ namespace FlightManagementSystem.Modules
         int CreateFlightStatus(LoginToken<Administrator> token, FlightStatus flStatus);
         FlightStatus GetFlightStatusById(LoginToken<Administrator> token,int id);
         void TransferElapsedFlightsToHistory(LoginToken<Administrator> token);
-        
+        List<Flight> GetAllFromFlights_History();
+
+
     }
 }

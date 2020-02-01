@@ -18,6 +18,13 @@ namespace FlightManagementSystem.Modules
 
         }
 
+        public List<Ticket> GetAllMyTickets(LoginToken<Customer> token)
+        {
+            List<Ticket> allMyTickets = new List<Ticket>();
+            allMyTickets = _ticketDAO.GetAllMyTickets(token.User.id);
+            return allMyTickets;
+        }
+
         public Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight)
         {
             Ticket ticket = new Ticket(0,flight.id, token.User.id);
@@ -27,10 +34,7 @@ namespace FlightManagementSystem.Modules
             ticket.id = id;
             return ticket;
         }
-        public Country GetCountryByName(LoginToken<Customer> token,string name)
-       {
-            return _countryDAO.GetByName(name);
-       }
+ 
         public Flight GetFlightByIdFlight(LoginToken<Customer> token,int id)
         {
            return _ticketDAO.GetFlightById(id);
@@ -42,34 +46,12 @@ namespace FlightManagementSystem.Modules
             dictFlightIntVac =  _flightDAO.GetAllFlightsVacancy();
             return dictFlightIntVac;
         }
-        public List<Flight> GetFlightsByDepartureTime(LoginToken<Customer> token,DateTime datetime)
-        {
-            List<Flight> listFlightByDepartTime = new List<Flight>();
-            listFlightByDepartTime = _flightDAO.GetFlightsByDepartureTime(datetime);
-            return listFlightByDepartTime;
-        }
-        public List<Flight> GetFlightsByDestinationCountry(LoginToken<Customer> token,Country country)
-        {
-            List<Flight> listFlightByDestCountry = new List<Flight>();
-            listFlightByDestCountry = _flightDAO.GetFlightsByDestinationCountry(country);
-            return listFlightByDestCountry;
-        }
-        public List<Flight> GetFlightsByLandingTime(LoginToken<Customer> token,DateTime datetime)
-        {
-            List<Flight> listFlightByLandingTime = new List<Flight>();
-            listFlightByLandingTime = _flightDAO.GetFlightsByLandingTime(datetime);
-            return listFlightByLandingTime;
-        }
-        public List<Flight> GetFlightsByOriginCountry(LoginToken<Customer> token,Country country)
-        {
-            List<Flight> listFlightByOriginCountry = new List<Flight>();
-            listFlightByOriginCountry = _flightDAO.GetFlightsByOriginCountry(country);
-            return listFlightByOriginCountry;
-        }
+
         public Ticket GetTicketByAllParametrs(LoginToken<Customer> token,int flightId,int customerId)
         {
            return _ticketDAO.GetTicketByAllParametrs(flightId, customerId);
         }
+
         public void RemoveTicket(LoginToken<Customer> token, Ticket ticket)
         {
             _ticketDAO.Remove(ticket);
@@ -81,6 +63,14 @@ namespace FlightManagementSystem.Modules
         public void ChangeMyPassword(LoginToken<Customer> token, string oldPassword, string newPassword)
         {
             _customerDAO.ChangeMyPassword(token.User, oldPassword, newPassword);
+        }
+
+        public List<Ticket> GetAllTicketsFromTickets_HistoryByCustomer(LoginToken<Customer> token,Customer customer)
+        {
+            List<Ticket> ticketsList = new List<Ticket>();
+            ticketsList =  _ticketDAO.GetAllTicketsFromTickets_HistoryByCustomer(customer);
+            return ticketsList;
+
         }
     }
     

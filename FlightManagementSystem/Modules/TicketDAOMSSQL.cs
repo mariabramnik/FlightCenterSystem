@@ -13,11 +13,13 @@ namespace FlightManagementSystem.Modules
         static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
         public void SQLConnectionOpen()
         {
-            con.Open();
+            if (con.State != System.Data.ConnectionState.Open)
+                con.Open();
         }
         public void SQLConnectionClose()
         {
-            con.Close();
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
         }
         public int Add(Ticket ob)
         {
@@ -170,6 +172,7 @@ namespace FlightManagementSystem.Modules
                 cmd.ExecuteNonQuery();
             }
         }
+
         public List<Ticket>GetTicketsByFlight(int id_flight)
         {
             List<Ticket> ticketsListByFlight = new List<Ticket>();
@@ -192,6 +195,29 @@ namespace FlightManagementSystem.Modules
             }
             return ticketsListByFlight;
         }
+        public List<Ticket>GetAllMyTickets(int custId)
+        {
+            List<Ticket> ticketsList = new List<Ticket>();
+            string str = $"SELECT * FROM Tickets WHERE CUSTOMER_ID = {custId}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Ticket ticket = new Ticket
+                        {
+                            id = (int)reader["ID"],
+                            customerId = (int)reader["CUSTOMER_ID"],
+                            flightId = (int)reader["FLIGHT_ID"]
+                        };
+                        ticketsList.Add(ticket);
+                    }
+                }
+            }
+            return ticketsList;
+        }
+
         public List<Flight>GetFlightsByCustomer(int custId)
         {
             List<Flight> listFlightByCustomer = new List<Flight>();
@@ -230,6 +256,15 @@ namespace FlightManagementSystem.Modules
                 cmd.ExecuteNonQuery();
             }
         }
+        public void RemoveAllFromTickets_History()
+        {
+            string str = "delete from Tickets_History";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         public bool IfTableTicketsIsEmpty()
         {
             bool res = false;
@@ -242,6 +277,22 @@ namespace FlightManagementSystem.Modules
             }
             return res;
         }
+        public bool IfTableTickets_HistoryIsEmpty()
+        {
+            bool res = false;
+            string str = $"SELECT COUNT(*) FROM Tickets_History";
+            SqlCommand cmd = new SqlCommand(str, con);
+            int num = (int)cmd.ExecuteScalar();
+            if (num == 0)
+            {
+                res = true;
+            }
+            return res;
+        }
+
+
+
+
         public void InsertTicketToTicketHistory(Ticket ticket)
         {
             string str = $"INSERT INTO Tickets_History VALUES({ticket.id},{ticket.flightId},{ticket.customerId})";
@@ -249,6 +300,51 @@ namespace FlightManagementSystem.Modules
             {
                 cmd.ExecuteNonQuery();
             }
+        }
+        public List<Ticket> GetTicketsByAirLineCompany(AirLineCompany comp)
+        {
+            List<Ticket> ticketsListByAirLine = new List<Ticket>();
+            string str = $"SELECT Tickets.ID,Tickets.FLIGHT_ID,Tickets.CUSTOMER_ID FROM Tickets JOIN Flights ON Tickets.FLIGHT_ID = Flights.ID WHERE Flights.AIRLINECOMPANY_ID  = {comp.id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Ticket ticket = new Ticket
+                        {
+                            id = (int)reader["ID"],
+                            customerId = (int)reader["CUSTOMER_ID"],
+                            flightId = (int)reader["FLIGHT_ID"]
+                        };
+                        ticketsListByAirLine.Add(ticket);
+                    }
+                }
+            }
+            return ticketsListByAirLine;
+        }
+        public List<Ticket>GetAllTicketsFromTickets_HistoryByCustomer(Customer customer)
+        {
+            List<Ticket> ticketsList = new List<Ticket>();
+            string str = $"SELECT * FROM Tickets_History WHERE CUSTOMER_ID = {customer.id}";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Ticket ticket = new Ticket
+                        {
+                            id = (int)reader["ID"],
+                            customerId = (int)reader["CUSTOMER_ID"],
+                            flightId = (int)reader["FLIGHT_ID"]
+                        };
+                        ticketsList.Add(ticket);
+                    }
+                }
+            }
+            return ticketsList;
+
         }
 
     }
