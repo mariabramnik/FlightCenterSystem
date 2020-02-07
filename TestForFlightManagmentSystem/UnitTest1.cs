@@ -44,7 +44,8 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                DateTime dtCurr = DateTime.Now;
+                DateTime dtNow = DateTime.Now;
+                DateTime dtCurr = new DateTime(dtNow.Year, dtNow.Month, dtNow.Day, dtNow.Hour, 00, 00);
                 DateTime departTime = dtCurr.AddHours(-8.0);
                 DateTime landingTime = dtCurr.AddHours(-4.0);
                 Country country1 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Israel");
@@ -73,7 +74,8 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                DateTime dtCurr = DateTime.Now;
+                DateTime dtNow = DateTime.Now;
+                DateTime dtCurr = new DateTime(dtNow.Year, dtNow.Month, dtNow.Day, dtNow.Hour, 00, 00);
                 DateTime departTime = dtCurr.AddHours(-8.0);
                 DateTime landingTime = dtCurr.AddHours(-4.0);
                 Country country1 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Israel");
@@ -105,7 +107,8 @@ namespace TestForFlightManagmentSystem
                 if (iCustomerFS is IAnonymousUserFacade)
                 {
                     IAnonymousUserFacade iAnonimFS = (IAnonymousUserFacade)iCustomerFS;
-                    DateTime dtCurr = DateTime.Now;
+                    DateTime dtNow = DateTime.Now;
+                    DateTime dtCurr = new DateTime(dtNow.Year, dtNow.Month, dtNow.Day, dtNow.Hour, 00, 00);
                     DateTime departTime = dtCurr.AddHours(-8.0);
                     IList<Flight> list = iAnonimFS.GetFlightsByDepartureDate(departTime);
                     Flight fl1 = list[0];
@@ -116,7 +119,9 @@ namespace TestForFlightManagmentSystem
                     if ((ticket1 == iCustomerFS.GetTicketByAllParametrs(ltCustomer, fl1.id, ltCustomer.User.id)) &&
                        (ticket2 == iCustomerFS.GetTicketByAllParametrs(ltCustomer, fl2.id, ltCustomer.User.id)))
                     {
+                        Monitor.Exit(fs);
                         Thread.Sleep(2000);
+                        Monitor.Enter(fs);
                         Flight myfl1 = iCustomerFS.GetFlightByIdFlight(ltCustomer, fl1.id);
                         Flight myfl2 = iCustomerFS.GetFlightByIdFlight(ltCustomer, fl2.id);
                         Ticket mytick1 = iCustomerFS.GetTicketByAllParametrs(ltCustomer, fl1.id, ltCustomer.User.id);
@@ -138,77 +143,83 @@ namespace TestForFlightManagmentSystem
         [TestMethod]
         public void TESTS_RUNNING()
         {
-           // TestLoginService tls = new TestLoginService();
+            // TestLoginService tls = new TestLoginService();
             // TestForCustomerFacade tcustf = new TestForCustomerFacade();
             //TestForAnanimousFacade tananimf = new TestForAnanimousFacade();
-            REMOVE_ALLDATA_FROM_DB();
-            UnitTestAdministratorFacade utad = new UnitTestAdministratorFacade();
-            utad.ADD_COUNTRY();
-            utad.ADD_COUNTRY2();
-            utad.ADD_COUNTRY3();
-            utad.GET_COUNTRY_BY_NAME();
-            utad.ADD_AIRLINECOMPANY();
-            utad.ADD_AIRLINECOMPANY2();
-            utad.UPDATE_AIRLINECOMPANY();
-            utad.REMOVE_AIRLINECOMPANY();
-            utad.ADD_AIRLINECOMPANY();
-            utad.CREATE_CUSTOMER();
-            utad.CREATE_CUSTOMER2();
-            utad.UPDATE_CUSTOMER();
-            utad.UPDATE_CUSTOMER2();
-            utad.REMOVE_CUSTOMER();
-            utad.CREATE_CUSTOMER2();
-            utad.CREATE_FLIGHT_STATUS();
-            utad.CREATE_FLIGHT_STATUS2();
-            utad.CREATE_FLIGHT_STATUS3();
-            utad.GET_AIRLINE_BY_NAME();
-            utad.GET_AIRLINE_BY_ID();
-            TestForAirlineFacade tairf = new TestForAirlineFacade();
-            tairf.CREATE_FLIGHT();           
-            tairf.CREATE_FLIGHT2();
-            tairf.CREATE_FLIGHT3();
-            tairf.CREATE_FLIGHT4();
-            tairf.CREATE_FLIGHT5();
-            tairf.UPADATE_FLIGHT();
-            tairf.REMOVE_FLIGHT();
-            tairf.CREATE_FLIGHT();
-            tairf.AIRLINE_CHANGE_PASSWORD_ACTUAL_TRUE();
-            tairf.AIRLINE_CHANGE_PASSWORD_BACK_ACTUAL_TRUE();
-            tairf.GET_FLIGHT_STATUS_BY_ID();
-            tairf.GET_FLIGHT_STATUS_BY_NAME();
-            tairf.GET_ALL_FLIGHTS_BY_AIRLINE();
-            tairf.GET_ALL_FLIGHTS_BY_AIRLINE2();
-            tairf.GET_ALL_TICKETS_BY_AIRLINE();
-            TestForCustomerFacade tcustf = new TestForCustomerFacade();
-            tcustf.CREATE_TICKET();
-            tcustf.CREATE_TICKET2();
-            tcustf.CREATE_TICKET3();
-            tcustf.REMOVE_TICKET_ACTUAL_TRUE();
-            tcustf.CREATE_TICKET();
-            tcustf.GET_ALL_MY_FLIGHTS();
-            tcustf.GET_ALL_MY_TICKETS();
-            tcustf.CUSTOMER_CHANGE_PASSWORD_ACTUAL_TRUE();
-            tcustf.CUSTOMER_CHANGE_PASSWORD_BACK_ACTUAL_TRUE();
-            TestForAnanimousFacade tanonimf = new TestForAnanimousFacade();
-            tanonimf.ANONYMOUS_GET_COUNTRY_BY_NAME();
-            tanonimf.GET_ALL_AIRLINECOMPANIES();
-            tanonimf.GET_ALL_COUNTRIES();
-            tanonimf.GET_ALL_FLIGHTS_BY_AIRLINECOMPANY();
-            tanonimf.GET_ALL_FLIGHTS_BY_DEPARTURE_TIME();
-            tanonimf.GET_ALL_FLIGHTS_BY_DESTINATION_COUNTRY_CODE();
-            tanonimf.GET_ALL_FLIGHTS_BY_LANDING_TIME();
-            tanonimf.GET_ALL_FLIGHTS_BY_ORIGIN_COUNTRY_CODE();
-            tanonimf.GET_ALL_FLIGHTS_FOR_ANONYMOUS();
-            tanonimf.GET_ALL_FLIGHTS_VACANCY();
-            TestLoginService tls = new TestLoginService();
-            tls.TryLogin_FALSE_Returned();
-            tls.TryLogin_FALSE_Returned2();
-            tls.TryLogin_TRUE_Returned();
-            tls.TryLogin_TRUE_Returned2();
+            FlyingCenterSystem fs = FlyingCenterSystem.Instance;
+            lock (fs)
+            {
+                REMOVE_ALLDATA_FROM_DB();
+                UnitTestAdministratorFacade utad = new UnitTestAdministratorFacade();
+                utad.ADD_COUNTRY();
+                utad.ADD_COUNTRY2();
+                utad.ADD_COUNTRY3();
+                utad.GET_COUNTRY_BY_NAME();
+                utad.ADD_AIRLINECOMPANY();
+                utad.ADD_AIRLINECOMPANY2();
+                utad.UPDATE_AIRLINECOMPANY();
+                utad.REMOVE_AIRLINECOMPANY();
+                utad.ADD_AIRLINECOMPANY();
+                utad.CREATE_CUSTOMER();
+                utad.CREATE_CUSTOMER2();
+                utad.UPDATE_CUSTOMER();
+                utad.UPDATE_CUSTOMER2();
+                utad.REMOVE_CUSTOMER();
+                utad.CREATE_CUSTOMER2();
+                utad.CREATE_FLIGHT_STATUS();
+                utad.CREATE_FLIGHT_STATUS2();
+                utad.CREATE_FLIGHT_STATUS3();
+                utad.GET_AIRLINE_BY_NAME();
+                utad.GET_AIRLINE_BY_ID();
+                TestForAirlineFacade tairf = new TestForAirlineFacade();
+                tairf.CREATE_FLIGHT();
+                tairf.CREATE_FLIGHT2();
+                tairf.CREATE_FLIGHT3();
+                tairf.CREATE_FLIGHT4();
+                tairf.CREATE_FLIGHT5();
+                tairf.UPADATE_FLIGHT();
+                tairf.REMOVE_FLIGHT();
+                tairf.CREATE_FLIGHT();
+                tairf.AIRLINE_CHANGE_PASSWORD_ACTUAL_TRUE();
+                tairf.AIRLINE_CHANGE_PASSWORD_BACK_ACTUAL_TRUE();
+                tairf.GET_FLIGHT_STATUS_BY_ID();
+                tairf.GET_FLIGHT_STATUS_BY_NAME();
+                tairf.GET_ALL_FLIGHTS_BY_AIRLINE();
+                tairf.GET_ALL_FLIGHTS_BY_AIRLINE2();
+                tairf.GET_ALL_TICKETS_BY_AIRLINE();
+                TestForCustomerFacade tcustf = new TestForCustomerFacade();
+                tcustf.CREATE_TICKET();
+                tcustf.CREATE_TICKET2();
+                tcustf.CREATE_TICKET3();
+                tcustf.REMOVE_TICKET_ACTUAL_TRUE();
+                tcustf.CREATE_TICKET();
+                tcustf.GET_ALL_MY_FLIGHTS();
+                tcustf.GET_ALL_MY_TICKETS();
+                tcustf.CUSTOMER_CHANGE_PASSWORD_ACTUAL_TRUE();
+                tcustf.CUSTOMER_CHANGE_PASSWORD_BACK_ACTUAL_TRUE();
+                TestForAnanimousFacade tanonimf = new TestForAnanimousFacade();
+                tanonimf.ANONYMOUS_GET_COUNTRY_BY_NAME();
+                tanonimf.GET_ALL_AIRLINECOMPANIES();
+                tanonimf.GET_ALL_COUNTRIES();
+                tanonimf.GET_ALL_FLIGHTS_BY_AIRLINECOMPANY();
+                tanonimf.GET_ALL_FLIGHTS_BY_DEPARTURE_TIME();
+                tanonimf.GET_ALL_FLIGHTS_BY_DESTINATION_COUNTRY_CODE();
+                tanonimf.GET_ALL_FLIGHTS_BY_LANDING_TIME();
+                tanonimf.GET_ALL_FLIGHTS_BY_ORIGIN_COUNTRY_CODE();
+                tanonimf.GET_ALL_FLIGHTS_FOR_ANONYMOUS();
+                tanonimf.GET_ALL_FLIGHTS_VACANCY();
+                TestLoginService tls = new TestLoginService();
+                tls.TryLogin_FALSE_Returned();
+                tls.TryLogin_FALSE_Returned2();
+                tls.TryLogin_TRUE_Returned();
+                tls.TryLogin_TRUE_Returned2();
+            }
+            Monitor.Enter(fs);
             //Test  thread for records Flights and Tickrts to History
             CREATE_FLIGHT_TO_TEST_RECORDS_TO_HISTORY();
             CREATE_FLIGHT_TO_TEST_RECORDS_TO_HISTORY2();
             CREATE_2_TICKET_TO_TEST_RECORDS_TO_HISTORY();
+            Monitor.Exit(fs);
             //record to the tables Flight_history and Tickets_History is expected after 2 sec
 
 

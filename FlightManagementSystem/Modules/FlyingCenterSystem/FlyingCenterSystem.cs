@@ -109,10 +109,14 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
                     {
                         break;
                     }
+
                     ILoggedInAdministratorFacade iLoggedAdminFacade = GetFacade<ILoggedInAdministratorFacade>();
                     //flights than landed more than 3 hours ago deleted from bd 
                     //table Flights and recorded in the table Flights_History.And the same thing with tickets;
-                    iLoggedAdminFacade.TransferElapsedFlightsToHistory(ltAdmin);
+                    lock (this)
+                    {
+                        iLoggedAdminFacade.TransferElapsedFlightsToHistory(ltAdmin);
+                    }
                 }
             }
         }
