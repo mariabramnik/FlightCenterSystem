@@ -19,9 +19,15 @@ namespace FlightManagementSystem.Modules
              con.Open();
          //   DictionaryFilling();
         }
+        public void SQLConnectionClose()
+        {
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
+        }
 
         private void DictionaryFilling()
         {
+            SQLConnectionOpen();
             Country country = null;
             string str = "SELECT * FROM Countries";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -41,13 +47,10 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
+            SQLConnectionClose();
         }
 
-        public void SQLConnectionClose()
-        {
-            if (con.State != System.Data.ConnectionState.Closed)
-                con.Close();
-        }
+
         public int Add(Country ob)
         {
             int res = 0;            
@@ -55,6 +58,7 @@ namespace FlightManagementSystem.Modules
             Country country = GetByName(ob.countryName);
             if (country is null)
             {
+                SQLConnectionOpen();
                 string str = $"INSERT INTO Countries VALUES('{countryName}');SELECT SCOPE_IDENTITY();";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
@@ -67,11 +71,13 @@ namespace FlightManagementSystem.Modules
             }
             // idCountriesDict.Add(id, ob);
             // nameCountriesDict.Add(countryName, ob);
+            SQLConnectionClose();
             return res;
         }
 
         public Country Get(int id)
         {
+            SQLConnectionOpen();
             Country country = null;
             string str = $"SELECT * FROM Countries WHERE ID = {id}";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -89,12 +95,13 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
-
+            SQLConnectionClose();
             return country;
         }
 
         public Country GetByName(string name)
         {
+            SQLConnectionOpen();
             Country country = null;
             string str = $"SELECT * FROM Countries WHERE COUNTRY_NAME = '{name}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -114,11 +121,13 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
+            SQLConnectionClose();
             return country;
         }
 
         public List<Country> GetAll()
         {
+            SQLConnectionOpen();
             List<Country> countriesList = new List<Country>();
             string str = $"SELECT * FROM Countries";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -135,25 +144,28 @@ namespace FlightManagementSystem.Modules
                         countriesList.Add(country);
                     }
                 }
-            }       
+            }
+            SQLConnectionClose();
             return countriesList;
         }
       
         public void Remove(Country ob)
-        {
+        {        
             string countryName = ob.countryName;
             Country country = Get(ob.id);
             if(country is null)
             {
-               throw new CountryNotExistException("This Country not exist");
+                throw new CountryNotExistException("This Country not exist");
             }
+            SQLConnectionOpen();
             string str = string.Format($"DELETE FROM Countries WHERE ID = {ob.id})");                      
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-          //  idCountriesDict.Remove(id);
-          //  nameCountriesDict.Remove(countryName);           
+            SQLConnectionClose();
+            //  idCountriesDict.Remove(id);
+            //  nameCountriesDict.Remove(countryName);           
         }
 
         public void Update(Country ob)
@@ -163,22 +175,27 @@ namespace FlightManagementSystem.Modules
             {
                 throw new CountryNotExistException("This Country not exist");
             }
+            SQLConnectionOpen();
             string str = $"UPDATE Countries SET COUNTRY_NAME = {ob.countryName} WHERE ID = {ob.id}";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
-            }          
+            }
+            SQLConnectionClose();
         }
         public void RemoveAllFromCountries()
         {
+            SQLConnectionOpen();
             string str = "delete from Countries";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
+            SQLConnectionClose();
         }
         public bool IfTableCountriesIsEmpty()
         {
+            SQLConnectionOpen();
             bool res = false;
             string str = $"SELECT COUNT(*) FROM Countries";
             SqlCommand cmd = new SqlCommand(str, con);
@@ -187,6 +204,7 @@ namespace FlightManagementSystem.Modules
             {
                 res = true;
             }
+            SQLConnectionClose();
             return res;
         }
     }

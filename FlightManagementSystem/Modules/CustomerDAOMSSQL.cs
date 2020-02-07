@@ -22,11 +22,12 @@ namespace FlightManagementSystem.Modules
                 con.Close();
         }
         public int Add(Customer ob)
-        {
+        {        
             int res = 0;
             Customer customer =  GetCustomerByUserName(ob.userName);
             if (customer is null)
             {
+                SQLConnectionOpen();
                 string str = $"INSERT INTO Customers VALUES('{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}');SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
@@ -37,6 +38,7 @@ namespace FlightManagementSystem.Modules
             {
                 throw new CustomerAlreadyExistException("This customer is already exist");
             }
+            SQLConnectionClose();
             return res;        
         }
 
@@ -66,11 +68,13 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
+            SQLConnectionClose();
             return customer;
         }
 
         public List<Customer> GetAll()
-        {         
+        {
+            SQLConnectionOpen();
             List<Customer> customersList = new List<Customer>();
             string str = $"SELECT * FROM Customers";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -95,12 +99,13 @@ namespace FlightManagementSystem.Modules
 
                 }
             }
-            
+            SQLConnectionClose();
             return customersList;
         }
 
         public Customer GetCustomerByUserName(string userName)
-        {           
+        {
+            SQLConnectionOpen();
             Customer customer = null;
             string str = $"SELECT * FROM Customers WHERE USER_NAME = '{userName}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -124,23 +129,25 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
+            SQLConnectionClose();
             return customer;         
         }
 
         public void Remove(Customer ob)
-        {
+        { 
             int id = ob.id;
             Customer customer = Get(id);
             if (customer is null)
             {
                 throw new CustomerNotExistException("This customer is not exist");
             }
+            SQLConnectionOpen();
             string str = $"DELETE FROM Customers WHERE ID = {id}";         
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-         
+            SQLConnectionClose();
         }
 
         public void Update(Customer ob)
@@ -150,6 +157,7 @@ namespace FlightManagementSystem.Modules
             {
                 throw new CustomerAlreadyExistException("This customer is already exist");
             }
+            SQLConnectionOpen();
             string str = string.Format($"UPDATE Customers SET FIRST_NAME = '{ob.firstName}',LAST_NAME = '{ob.lastName}'," +
                 $"USER_NAME = '{ob.userName}', PASSWORD = '{ob.password}',Address = '{ob.address}',PHONE_NO = '{ob.phoneNo}'," +
                 $"CREDIT_CARD_NUMBER = '{ob.creditCardNumber}' WHERE ID = {ob.id}");          
@@ -157,17 +165,21 @@ namespace FlightManagementSystem.Modules
             {
                 cmd.ExecuteNonQuery();
             }
+            SQLConnectionClose();
         }
         public void RemoveAllFromCustomers()
         {
+            SQLConnectionOpen();
             string str = "delete from Customers";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
+            SQLConnectionClose();
         }
         public bool IfTableCustomersIsEmpty()
         {
+            SQLConnectionOpen();
             bool res = false;
             string str = $"SELECT COUNT(*) FROM Customers";
             SqlCommand cmd = new SqlCommand(str, con);
@@ -176,6 +188,7 @@ namespace FlightManagementSystem.Modules
             {
                 res = true;
             }
+            SQLConnectionClose();
             return res;
         }
         public void ChangeMyPassword(Customer customer, string oldPassword, string newPassword)

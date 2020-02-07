@@ -31,7 +31,6 @@ namespace FlightManagementSystem.Modules.Login
             loginToken = null;
             AirLineCompany comp = null;
             _airLineDAO = new AirLineDAOMSSQL();
-            _airLineDAO.SQLConnectionOpen();
              comp = _airLineDAO.GetAirLineByUserName(userName);
              if(!(comp is null))
             { 
@@ -46,7 +45,6 @@ namespace FlightManagementSystem.Modules.Login
                     res = true;
                 }
             }
-            _airLineDAO.SQLConnectionClose();
             return res;
 
         }
@@ -56,7 +54,6 @@ namespace FlightManagementSystem.Modules.Login
             bool res = false;
             loginToken = null;
             _customerDAO = new CustomerDAOMSSQL();
-            _customerDAO.SQLConnectionOpen();
             Customer cust = _customerDAO.GetCustomerByUserName(userName);
             if(!(cust is null))
             {
@@ -71,7 +68,6 @@ namespace FlightManagementSystem.Modules.Login
                     loginToken.User = cust;
                 }
             }
-            _customerDAO.SQLConnectionClose();
             return res;
         }
 

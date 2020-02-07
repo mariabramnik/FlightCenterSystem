@@ -27,6 +27,7 @@ namespace FlightManagementSystem.Modules
         }
         private void DictionarysFilling()
         {
+            SQLConnectionOpen();
             string str = "SELECT * FROM AirlineCompanies";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
@@ -47,13 +48,15 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
+            SQLConnectionClose();
         }
         public int Add(AirLineCompany ob)
-        {
+        {   
             int res = 0;
             AirLineCompany comp = GetAirLineCompanyByName(ob.airLineName);
             if (comp is null)
             {
+                SQLConnectionOpen();
                 string str = $"INSERT INTO AirlineCompanies VALUES('{ob.airLineName}','{ob.userName}','{ob.password}',{ob.countryCode});SELECT SCOPE_IDENTITY()";
                 using (SqlCommand cmd = new SqlCommand(str, con))
                 {
@@ -66,6 +69,7 @@ namespace FlightManagementSystem.Modules
             }
             // idAiLineCompanyDict.Add(id,ob);
             // userNameCompanyDict.Add(userName, ob);
+            SQLConnectionClose();
             return res;
             
         }
@@ -73,7 +77,6 @@ namespace FlightManagementSystem.Modules
         public AirLineCompany Get(int id)
         {
             SQLConnectionOpen();
-
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE ID = {id}";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -95,12 +98,13 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
-            
+            SQLConnectionClose();
             return comp;
 
         }
         public AirLineCompany GetAirLineCompanyByName(string airLineName)
         {
+            SQLConnectionOpen();
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE AIRLINE_NAME = '{airLineName}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -121,12 +125,13 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
-
+            SQLConnectionClose();
             return comp;
         }
 
         public AirLineCompany GetAirLineByUserName(string userName)
-        {          
+        {
+            SQLConnectionOpen();
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE USER_NAME = '{userName}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -147,11 +152,13 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
+            SQLConnectionClose();
             return comp;
         }
 
         public List<AirLineCompany> GetAll()
         {
+            SQLConnectionOpen();
             List<AirLineCompany> compList = new List<AirLineCompany>();
             string str = $"SELECT * FROM AirlineCompanies";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -173,11 +180,13 @@ namespace FlightManagementSystem.Modules
 
                 }
             }
+            SQLConnectionClose();
             return compList;
         }
 
         public List<AirLineCompany> GetAllAirLinesCompanyByCountry(Country country)
-        {           
+        {
+            SQLConnectionOpen();
             List<AirLineCompany> compList = new List<AirLineCompany>() ;
             string str = $"SELECT * FROM AirlineCompanies WHERE COUNTRY_CODE = '{country.id}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -198,24 +207,25 @@ namespace FlightManagementSystem.Modules
                      }
                 }
             }
-           
+            SQLConnectionClose();
             return compList;
         }
 
         public void Remove(AirLineCompany ob)
-        {
+        {          
             int id = ob.id;
             AirLineCompany comp = Get(ob.id);
             if(comp is null)
             {
                 throw new AirLineCompanyNotExistException("This company not exist");
             }
+            SQLConnectionOpen();
             string str = $"DELETE FROM AirlineCompanies WHERE ID = {id}";         
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
- 
+            SQLConnectionClose();
         }
 
         public void Update(AirLineCompany ob)
@@ -226,16 +236,18 @@ namespace FlightManagementSystem.Modules
                 throw new AirLineCompanyNotExistException("This company not exist");
             }
             AirLineCompany oldAirLineComp = Get(ob.id);
+            SQLConnectionOpen();
             string str = $"UPDATE AirlineCompanies SET AIRLINE_NAME = '{ob.airLineName}',USER_NAME = '{ob.userName}',PASSWORD = '{ob.password}',COUNTRY_CODE = {ob.countryCode} WHERE ID = {ob.id}";           
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-
+            SQLConnectionClose();
         }
 
         public AirLineCompany GetCompanyByPassword(string password)
         {
+            SQLConnectionOpen();
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE PASSWORD = '{password}'";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -256,19 +268,22 @@ namespace FlightManagementSystem.Modules
                     }
                 }
             }
-           
+            SQLConnectionClose();
             return comp;
         }
         public void RemoveAllFromAirLines()
         {
+            SQLConnectionOpen();
             string str = "delete from AirlineCompanies";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
+            SQLConnectionClose();
         }
         public bool IfTableAirlinesIsEmpty()
         {
+            SQLConnectionOpen();
             bool res = false;
             string str = $"SELECT COUNT(*) FROM AirlineCompanies";
             using (SqlCommand cmd = new SqlCommand(str, con))
@@ -279,6 +294,7 @@ namespace FlightManagementSystem.Modules
                     res = true;
                 }
             }
+            SQLConnectionClose();
             return res;
         }
         
