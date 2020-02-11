@@ -59,7 +59,7 @@ namespace TestForFlightManagmentSystem
                 {
                     Flight flight = listFlight[0];
                     int flightId = flight.id;
-                    DateTime newDepartTime = new DateTime(2020, 2, 21, 17, 15, 00);
+                    DateTime newDepartTime = new DateTime(2020, 4, 21, 17, 15, 00);
                     flight.departureTime = newDepartTime;
                     iAirlineCompanyFS.UpdateFlight(ltAirLine, flight);
                     if (iAirlineCompanyFS.GetFlightByID(ltAirLine, flightId) == flight)
@@ -83,8 +83,8 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                DateTime departTime = new DateTime(2020, 2, 21, 16, 15, 00);
-                DateTime landingTime = new DateTime(2020, 2, 21, 08, 05, 00);
+                DateTime departTime = new DateTime(2020, 4, 21, 16, 15, 00);
+                DateTime landingTime = new DateTime(2020, 4, 21, 08, 05, 00);
                 Country country1 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Israel");
                 Country country2 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Latvia");
                 FlightStatus flStatus = iAirlineCompanyFS.GetFlightStatusByName(ltAirLine, "panding");
@@ -111,8 +111,8 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                DateTime departTime = new DateTime(2020, 2, 10, 19, 15, 00);
-                DateTime landingTime = new DateTime(2020, 2, 11, 08, 05, 00);
+                DateTime departTime = new DateTime(2020, 4, 10, 19, 15, 00);
+                DateTime landingTime = new DateTime(2020, 4, 11, 08, 05, 00);
                 Country country1 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Israel");
                 Country country2 = iAirlineCompanyFS.GetCountryByName(ltAirLine, "Latvia");
                 FlightStatus flStatus = iAirlineCompanyFS.GetFlightStatusByName(ltAirLine, "panding");
