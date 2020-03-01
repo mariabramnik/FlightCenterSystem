@@ -125,7 +125,7 @@ namespace FlightManagementSystem.Modules
             return country;
         }
 
-        public List<Country> GetAll()
+        public IList<Country> GetAll()
         {
             SQLConnectionOpen();
             List<Country> countriesList = new List<Country>();

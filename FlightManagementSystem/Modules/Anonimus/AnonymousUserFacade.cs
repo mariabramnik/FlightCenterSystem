@@ -57,22 +57,22 @@ namespace FlightManagementSystem.Modules
             return _countryDAO.GetByName(name);
         }
 
-        public  List<Country> GetAllCountries()
+        public  IList<Country> GetAllCountries()
         {
-            List<Country> list = _countryDAO.GetAll();
+            IList<Country> list = _countryDAO.GetAll();
             return list;
         }
 
-        public List<Flight> GetAllFlightsByAirLineCompanies(AirLineCompany comp)
+        public IList<Flight> GetAllFlightsByAirLineCompanies(AirLineCompany comp)
         {
-            List<Flight> allFlightsByAirLine = new List<Flight>();
+            IList<Flight> allFlightsByAirLine = new List<Flight>();
             allFlightsByAirLine = _flightDAO.GetFlightsByAirLineCompany(comp);
             return allFlightsByAirLine;
         }
 
-        public List<Flight> GetAllFlightsByFlights_History()
+        public IList<Flight> GetAllFlightsByFlights_History()
         {
-            List<Flight> listFlights = new List<Flight>();
+            IList<Flight> listFlights = new List<Flight>();
             listFlights = _flightDAO.SelectAllFromFlights_History();
             return listFlights;
         }

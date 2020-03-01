@@ -96,7 +96,7 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAdministratorFacade iAdminFS = fs.GetFacade<ILoggedInAdministratorFacade>();
-                List<Country> listCountries = iAdminFS.GetAllCountries();
+                IList<Country> listCountries = iAdminFS.GetAllCountries();
                 string name = listCountries[0].countryName;
                 if (listCountries[0] == iAdminFS.GetCountryByName(name))
                 {

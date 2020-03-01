@@ -126,8 +126,8 @@ namespace TestForFlightManagmentSystem
                         Flight myfl2 = iCustomerFS.GetFlightByIdFlight(ltCustomer, fl2.id);
                         Ticket mytick1 = iCustomerFS.GetTicketByAllParametrs(ltCustomer, fl1.id, ltCustomer.User.id);
                         Ticket mytick2 = iCustomerFS.GetTicketByAllParametrs(ltCustomer, fl2.id, ltCustomer.User.id);
-                        List<Ticket> myListHist = iCustomerFS.GetAllTicketsFromTickets_HistoryByCustomer(ltCustomer,ltCustomer.User);
-                        List<Flight>FlightsHistory = iAnonimFS.GetAllFlightsByFlights_History();
+                        IList<Ticket> myListHist = iCustomerFS.GetAllTicketsFromTickets_HistoryByCustomer(ltCustomer,ltCustomer.User);
+                        IList<Flight>FlightsHistory = iAnonimFS.GetAllFlightsByFlights_History();
                         if (myfl1 is null && myfl2 is null && mytick1 is null && mytick2 is null && myListHist.Count == 2 && FlightsHistory.Count == 2)
                         {
                             actual = true;

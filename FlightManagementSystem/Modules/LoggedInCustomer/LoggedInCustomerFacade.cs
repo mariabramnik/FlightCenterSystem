@@ -12,15 +12,15 @@ namespace FlightManagementSystem.Modules
     {
         public IList<Flight> GetAllMyFlights(LoginToken<Customer> token)
         {
-            List<Flight> listFlightByCustomer = new List<Flight>();
+            IList<Flight> listFlightByCustomer = new List<Flight>();
             listFlightByCustomer = _flightDAO.GetFlightsByCustomer(token.User);
             return listFlightByCustomer;
 
         }
 
-        public List<Ticket> GetAllMyTickets(LoginToken<Customer> token)
+        public IList<Ticket> GetAllMyTickets(LoginToken<Customer> token)
         {
-            List<Ticket> allMyTickets = new List<Ticket>();
+            IList<Ticket> allMyTickets = new List<Ticket>();
             allMyTickets = _ticketDAO.GetAllMyTickets(token.User.id);
             return allMyTickets;
         }
@@ -65,9 +65,9 @@ namespace FlightManagementSystem.Modules
             _customerDAO.ChangeMyPassword(token.User, oldPassword, newPassword);
         }
 
-        public List<Ticket> GetAllTicketsFromTickets_HistoryByCustomer(LoginToken<Customer> token,Customer customer)
+        public IList<Ticket> GetAllTicketsFromTickets_HistoryByCustomer(LoginToken<Customer> token,Customer customer)
         {
-            List<Ticket> ticketsList = new List<Ticket>();
+            IList<Ticket> ticketsList = new List<Ticket>();
             ticketsList =  _ticketDAO.GetAllTicketsFromTickets_HistoryByCustomer(customer);
             return ticketsList;
 

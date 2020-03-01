@@ -98,7 +98,7 @@ namespace FlightManagementSystem.Modules
             SQLConnectionClose();
             return tick;
         }
-        public List<Ticket> GetAll()
+        public IList<Ticket> GetAll()
         {
             SQLConnectionOpen();
             List<Ticket> ticketsList = new List<Ticket>();

@@ -167,7 +167,7 @@ namespace TestForFlightManagmentSystem
             bool actual = true;
             FlyingCenterSystem fs = FlyingCenterSystem.Instance;
             IAnonymousUserFacade iAnonym = fs.GetFacade<IAnonymousUserFacade>();
-            List<Country> countryList = iAnonym.GetAllCountries();
+            IList<Country> countryList = iAnonym.GetAllCountries();
             if (countryList.Count == 3)
             {
                 actual = true;

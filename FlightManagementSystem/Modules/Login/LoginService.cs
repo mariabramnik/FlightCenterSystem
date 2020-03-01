@@ -71,12 +71,14 @@ namespace FlightManagementSystem.Modules.Login
             return res;
         }
 
-        public bool TryLogin(string password, string userName)
+        public bool TryLogin(string password, string userName, out ILoginToken token)
         {
             bool res = false;
             LoginToken<Administrator> ltAdmin = null;
             res = TryAdminLogin(password, userName, out ltAdmin);
-            if(res == false)
+  
+            //throw new FunnyException("HA HA");
+            if (res == false)
             {
                 LoginToken<AirLineCompany> ltAirLineCompany = null;
                 res = TryAirLineLogin(password, userName, out ltAirLineCompany);
@@ -88,9 +90,21 @@ namespace FlightManagementSystem.Modules.Login
                     {
                         throw new UserNotFoundException("Not Found");
                     }
-                }               
+                    else
+                    {
+                        token = ltCustomer;
+                    }
+                }
+                else
+                {
+                    token = ltAirLineCompany;
+                }
             }
-
+            else
+            {
+                token = ltAdmin;
+            }
+ 
             return res;
         }
 

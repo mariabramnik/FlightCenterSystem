@@ -340,7 +340,7 @@ namespace FlightManagementSystem.Modules
             return fl;
         }
 
-        public List<Flight> GetAll()
+        public IList<Flight> GetAll()
         {
             SQLConnectionOpen();
             List<Flight> allFlights = new List<Flight>();

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class Flight : IPoco
+    public class Flight : IPoco , INotifyPropertyChanged
     {
         public int id;
         public int airLineCompanyId;
@@ -16,6 +17,8 @@ namespace FlightManagementSystem.Models
         public DateTime landingTime;
         public int remainingTickets;
         public int flightStatusId;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public Flight(int id, int airLineCompanyId, int originCountryCode, int destinationCountryCode, 
             DateTime departureTime, DateTime landingTime, int remainingTickets)
@@ -42,7 +45,7 @@ namespace FlightManagementSystem.Models
 
         public override int GetHashCode()
         {
-            return 1877310944 + id.GetHashCode();
+            return id;
         }
 
         public override string ToString()

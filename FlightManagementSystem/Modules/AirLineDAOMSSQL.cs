@@ -156,7 +156,7 @@ namespace FlightManagementSystem.Modules
             return comp;
         }
 
-        public List<AirLineCompany> GetAll()
+        public IList<AirLineCompany> GetAll()
         {
             SQLConnectionOpen();
             List<AirLineCompany> compList = new List<AirLineCompany>();

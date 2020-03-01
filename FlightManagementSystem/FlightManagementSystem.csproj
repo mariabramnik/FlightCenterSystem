@@ -65,6 +65,7 @@
     <Compile Include="Models\Administrator.cs" />
     <Compile Include="Modules\FlyingCenterSystem\FlyingCenterSystem.cs" />
     <Compile Include="Modules\IFlightStatusDAO.cs" />
+    <Compile Include="Modules\ILoginToken.cs" />
     <Compile Include="Modules\LoggedInAdmin\ILoggedInAdministratorFacade.cs" />
     <Compile Include="Modules\LoggedInAdmin\LoggedInAdministratorFacade.cs" />
     <Compile Include="Modules\LoggedInAirLine\ILoggedInAirLineFacade.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Modules\IFlightDAO.cs" />
     <Compile Include="Modules\LoggedInCustomer\ILoggedInCustomerFacade.cs" />
     <Compile Include="Modules\LoginToken.cs" />
+    <Compile Include="Modules\Login\FunnyException.cs" />
     <Compile Include="Modules\Login\ILoginService.cs" />
     <Compile Include="Modules\ITicketDAO.cs" />
     <Compile Include="Modules\Login\LoginService.cs" />

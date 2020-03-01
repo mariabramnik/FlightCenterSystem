@@ -10,14 +10,14 @@ namespace FlightManagementSystem.Modules
     public interface ILoggedInCustomerFacade
     {
        IList<Flight> GetAllMyFlights(LoginToken<Customer> token);
-        List<Ticket> GetAllMyTickets(LoginToken<Customer> token);
+       IList<Ticket> GetAllMyTickets(LoginToken<Customer> token);
        Ticket PurchaseTicket(LoginToken<Customer> token, Flight flight);
        Flight GetFlightByIdFlight(LoginToken<Customer> token,int id);
        Dictionary<Flight, int> GetAllFlightsVacancy(LoginToken<Customer> token);
        Ticket GetTicketByAllParametrs(LoginToken<Customer> token,int flightId, int customerId);
        void RemoveTicket(LoginToken<Customer> token, Ticket ticket);
        void ChangeMyPassword(LoginToken<Customer> token, string oldPassword, string newPassword);
-        List<Ticket> GetAllTicketsFromTickets_HistoryByCustomer(LoginToken<Customer> token,Customer customer);
+       IList<Ticket> GetAllTicketsFromTickets_HistoryByCustomer(LoginToken<Customer> token,Customer customer);
 
 
     }

@@ -72,7 +72,7 @@ namespace FlightManagementSystem.Modules
             return customer;
         }
 
-        public List<Customer> GetAll()
+        public IList<Customer> GetAll()
         {
             SQLConnectionOpen();
             List<Customer> customersList = new List<Customer>();

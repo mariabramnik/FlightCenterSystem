@@ -262,7 +262,7 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                List<Ticket> listTickets = iAirlineCompanyFS.GetAllTicketsByAirLine(ltAirLine);
+                IList<Ticket> listTickets = iAirlineCompanyFS.GetAllTicketsByAirLine(ltAirLine);
                 foreach (Ticket ticket in listTickets)
                 {
                     Flight fl = iAirlineCompanyFS.GetFlightByID(ltAirLine, ticket.flightId);
@@ -370,7 +370,7 @@ namespace TestForFlightManagmentSystem
             {
                 FlyingCenterSystem fs = FlyingCenterSystem.Instance;
                 ILoggedInAirLineFacade iAirlineCompanyFS = fs.GetFacade<ILoggedInAirLineFacade>();
-                List<FlightStatus> listFlightStatus = iAirlineCompanyFS.GetAllFlightStatus(ltAirLine);
+                IList<FlightStatus> listFlightStatus = iAirlineCompanyFS.GetAllFlightStatus(ltAirLine);
                 FlightStatus flStatus = listFlightStatus[0];
                 int id = flStatus.id;
                 string name = flStatus.statusName;

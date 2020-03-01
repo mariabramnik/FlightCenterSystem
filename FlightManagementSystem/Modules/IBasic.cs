@@ -10,7 +10,7 @@ namespace FlightManagementSystem.Modules
     {
         int Add(T ob);
         T Get(int id);
-        List<T>GetAll();
+        IList<T>GetAll();
         void Remove(T ob);
         void Update(T ob);
     }

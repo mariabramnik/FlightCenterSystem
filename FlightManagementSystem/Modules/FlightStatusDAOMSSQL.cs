@@ -115,7 +115,7 @@ namespace FlightManagementSystem.Modules
             return flStatus;
         }
 
-        public List<FlightStatus> GetAll()
+        public IList<FlightStatus> GetAll()
         {
             SQLConnectionOpen();
             List<FlightStatus> flightStatusList = new List<FlightStatus>();

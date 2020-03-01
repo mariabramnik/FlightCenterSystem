@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Modules
 {
-   public class  LoginToken<T> 
+   public class  LoginToken<T> : ILoginToken 
     {
         public T User{ get; set; }
 

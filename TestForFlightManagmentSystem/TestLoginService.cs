@@ -20,8 +20,9 @@ namespace TestForFlightManagmentSystem
             string password = "kramnik";
             string userName = "KramnikAdmin";
 
+            ILoginToken iLoginToken;
             LoginService ls = new LoginService();
-            bool actual = ls.TryLogin(password, userName);
+            bool actual = ls.TryLogin(password, userName, out iLoginToken);
             Assert.IsTrue(actual);
         }
         // Successfull authorization.This User is Customer.
@@ -31,8 +32,9 @@ namespace TestForFlightManagmentSystem
             string password = "0021";
             string userName = "inna34";
 
+            ILoginToken iLoginToken;
             LoginService ls = new LoginService();
-            bool actual = ls.TryLogin(password, userName);
+            bool actual = ls.TryLogin(password, userName, out iLoginToken);
             Assert.IsTrue(actual);
         }
         // Not Successfull authorization.
@@ -44,8 +46,9 @@ namespace TestForFlightManagmentSystem
             bool actual = true;
             try
             {
+                ILoginToken iLoginToken;
                 LoginService ls = new LoginService();
-                ls.TryLogin(password, userName);
+                ls.TryLogin(password, userName, out iLoginToken);
             }
             catch (Exception ex)
             {
@@ -65,8 +68,9 @@ namespace TestForFlightManagmentSystem
             bool actual = true;
             try
             {
+                ILoginToken iLoginToken;
                 LoginService ls = new LoginService();
-                ls.TryLogin(password, userName);
+                ls.TryLogin(password, userName, out iLoginToken);
             }
             catch (Exception ex)
             {
