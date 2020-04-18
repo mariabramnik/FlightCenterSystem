@@ -10,7 +10,8 @@ namespace FlightManagementSystem.Modules
 {
     class TicketDAOMSSQL : ITicketDAO
     {
-        static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        // static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        static SqlConnection con = new SqlConnection(@"Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;");
         public void SQLConnectionOpen()
         {
             if (con.State != System.Data.ConnectionState.Open)
@@ -128,7 +129,7 @@ namespace FlightManagementSystem.Modules
             Ticket ticket = Get(ob.id);
             if (ticket is null)
             {
-                throw new TicketAlreadyExistException("This ticketis is already exist");
+                throw new TicketNotExistException("This ticketis is not exist");
             }
             SQLConnectionOpen();
             string str = $"DELETE FROM Tickets WHERE ID = {ob.id}";

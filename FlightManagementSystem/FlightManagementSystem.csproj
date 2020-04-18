@@ -63,6 +63,16 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="Helper\DBConnection.cs" />
     <Compile Include="Models\Administrator.cs" />
+    <Compile Include="Modules\AirLineCompanyAlreadyExistException.cs" />
+    <Compile Include="Modules\AirLineCompanyNotExistException.cs" />
+    <Compile Include="Modules\CountryAlredyExistException.cs" />
+    <Compile Include="Modules\CountryNotExistException.cs" />
+    <Compile Include="Modules\CustomerAlreadyExistException.cs" />
+    <Compile Include="Modules\CustomerNotExistException.cs" />
+    <Compile Include="Modules\FlightAlreadyExistException.cs" />
+    <Compile Include="Modules\FlightNotExistException.cs" />
+    <Compile Include="Modules\FlightStatusAlreadyExistException.cs" />
+    <Compile Include="Modules\FlightStatusNotExistException.cs" />
     <Compile Include="Modules\FlyingCenterSystem\FlyingCenterSystem.cs" />
     <Compile Include="Modules\IFlightStatusDAO.cs" />
     <Compile Include="Modules\ILoginToken.cs" />
@@ -79,23 +89,13 @@
     <Compile Include="Models\Flight.cs" />
     <Compile Include="Models\FlightStatus.cs" />
     <Compile Include="Models\Ticket.cs" />
-    <Compile Include="Modules\AirLineCompanyAlreadyExistException.cs" />
-    <Compile Include="Modules\AirLineCompanyNotExistException.cs" />
     <Compile Include="Modules\AirLineDAOMSSQL.cs" />
     <Compile Include="Modules\Anonimus\AnonymousUserFacade.cs" />
-    <Compile Include="Modules\CountryAlredyExistException.cs" />
     <Compile Include="Modules\CountryDAOMSSQL.cs" />
-    <Compile Include="Modules\CountryNotExistException.cs" />
-    <Compile Include="Modules\CustomerAlreadyExistException.cs" />
     <Compile Include="Modules\CustomerDAOMSSQL.cs" />
-    <Compile Include="Modules\CustomerNotExistException.cs" />
     <Compile Include="Modules\FacadeBase.cs" />
-    <Compile Include="Modules\FlightAlreadyExistException.cs" />
     <Compile Include="Modules\FlightDAOMSSQL.cs" />
-    <Compile Include="Modules\FlightNotExistException.cs" />
     <Compile Include="Modules\FlightStatusDAOMSSQL.cs" />
-    <Compile Include="Modules\FlightStatusNotExistException.cs" />
-    <Compile Include="Modules\FlStatusAlreadyExistException.cs" />
     <Compile Include="Modules\IAirLineDAO.cs" />
     <Compile Include="Modules\Anonimus\IAnonymousUserFacade.cs" />
     <Compile Include="Modules\IBasic.cs" />
@@ -108,11 +108,11 @@
     <Compile Include="Modules\Login\ILoginService.cs" />
     <Compile Include="Modules\ITicketDAO.cs" />
     <Compile Include="Modules\Login\LoginService.cs" />
+    <Compile Include="Modules\UserNotFoundException.cs" />
     <Compile Include="Modules\Login\WrongPasswordException.cs" />
     <Compile Include="Modules\TicketAlreadyExistException.cs" />
     <Compile Include="Modules\TicketDAOMSSQL.cs" />
     <Compile Include="Modules\TicketNotExistException.cs" />
-    <Compile Include="Modules\UserNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

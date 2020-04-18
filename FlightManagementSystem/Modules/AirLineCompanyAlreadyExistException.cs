@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace FlightManagementSystem.Modules
 {
-    class AirLineCompanyAlreadyExistException : Exception
+    [Serializable]
+    public class AirLineCompanyAlreadyExistException : Exception
     {
-        public AirLineCompanyAlreadyExistException(string message) : base(message)
+        public AirLineCompanyAlreadyExistException()
         {
+        }
 
+        public AirLineCompanyAlreadyExistException(string message) : base("this airline is already exist")
+        {
+        }
+
+        public AirLineCompanyAlreadyExistException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected AirLineCompanyAlreadyExistException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

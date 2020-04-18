@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace FlightManagementSystem.Modules
 {
+    [Serializable]
     public class TicketNotExistException : Exception
     {
-        public TicketNotExistException(string message):base(message)
+        public TicketNotExistException()
         {
+        }
 
+        public TicketNotExistException(string message) : base("this ticket is not exist")
+        {
+        }
+
+        public TicketNotExistException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected TicketNotExistException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

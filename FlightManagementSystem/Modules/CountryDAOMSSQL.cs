@@ -10,9 +10,10 @@ namespace FlightManagementSystem.Modules
 {
     class CountryDAOMSSQL : ICountryDAO
     {
-       // public Dictionary<int, Country> idCountriesDict = new Dictionary<int, Country>();
-       // public Dictionary<string, Country> nameCountriesDict = new Dictionary<string, Country>();
-        static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        // public Dictionary<int, Country> idCountriesDict = new Dictionary<int, Country>();
+        // public Dictionary<string, Country> nameCountriesDict = new Dictionary<string, Country>();
+        // static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        static SqlConnection con = new SqlConnection(@"Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;");
         public void SQLConnectionOpen()
         {
             if(con.State != System.Data.ConnectionState.Open)

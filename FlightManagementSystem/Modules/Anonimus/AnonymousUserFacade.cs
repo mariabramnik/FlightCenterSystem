@@ -77,5 +77,11 @@ namespace FlightManagementSystem.Modules
             return listFlights;
         }
 
+        public IList<FlightStatus> GetFlightStatuses()
+        {
+            IList<FlightStatus> listFlightStatuses = new List<FlightStatus>();
+            listFlightStatuses = _flightStatusDAO.GetAll();
+            return listFlightStatuses;
+        }
     }
 }

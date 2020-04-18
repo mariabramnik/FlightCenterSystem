@@ -8,8 +8,8 @@ namespace FlightManagementSystem.Models
 {
     public class Country : IPoco
     {
-        public int id;
-        public string countryName;
+        public int id { get; set; }
+        public string countryName { get; set; }
         
         public Country()
         {

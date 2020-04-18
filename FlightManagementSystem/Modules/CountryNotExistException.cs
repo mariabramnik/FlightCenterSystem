@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace FlightManagementSystem.Modules
 {
-    class CountryNotExistException : Exception
+    [Serializable]
+    public class CountryNotExistException : Exception
     {
-        public CountryNotExistException(string message) : base(message)
+        public CountryNotExistException()
         {
+        }
 
+        public CountryNotExistException(string message) : base("this country is not exist")
+        {
+        }
+
+        public CountryNotExistException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected CountryNotExistException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

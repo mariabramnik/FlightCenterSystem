@@ -8,9 +8,9 @@ namespace FlightManagementSystem.Models
 {
     public class Ticket : IPoco
     {
-        public int id;
-        public int flightId;
-        public int customerId;
+        public int id{ get; set; }
+        public int flightId { get; set; }
+        public int customerId { get; set; }
         public Ticket() { }
 
         public Ticket(int id, int flightId, int customerId)

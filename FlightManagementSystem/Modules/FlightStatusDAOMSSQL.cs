@@ -10,8 +10,9 @@ namespace FlightManagementSystem.Modules
 {
     class FlightStatusDAOMSSQL : IFlightStatusDAO
     {
-       // public Dictionary<int, FlightStatus> flightStatusDict = new Dictionary<int, FlightStatus>();
-        static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        // public Dictionary<int, FlightStatus> flightStatusDict = new Dictionary<int, FlightStatus>();
+        // static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        static SqlConnection con = new SqlConnection(@"Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;");
         public void SQLConnectionOpen()
         {
             if (con.State != System.Data.ConnectionState.Open)
@@ -63,6 +64,10 @@ namespace FlightManagementSystem.Modules
                 {
                     res = Convert.ToInt32(cmd.ExecuteScalar());
                 }
+            }
+            else
+            {
+                throw new FlightStatusAlreadyExistException("This FlightStatus already exist");
             }
             SQLConnectionClose();
             return res;

@@ -29,7 +29,8 @@ namespace FlightManagementSystem.Modules
         FlightStatus GetFlightStatusById(LoginToken<Administrator> token,int id);
         void TransferElapsedFlightsToHistory(LoginToken<Administrator> token);
         List<Flight> GetAllFromFlights_History();
-
+        IList<Customer> GetAllCustomers(LoginToken<Administrator> token);
+        Country GetCountry(LoginToken<Administrator> token, int id);
 
     }
 }

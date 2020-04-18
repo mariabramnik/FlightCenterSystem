@@ -10,7 +10,8 @@ namespace FlightManagementSystem.Modules
 {
     class CustomerDAOMSSQL : ICustomerDAO
     {
-        static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        //static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        static SqlConnection con = new SqlConnection(@"Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;");
         public void SQLConnectionOpen()
         {
             if (con.State != System.Data.ConnectionState.Open)
@@ -155,7 +156,7 @@ namespace FlightManagementSystem.Modules
             Customer customer = Get(ob.id);
             if (customer is null)
             {
-                throw new CustomerAlreadyExistException("This customer is already exist");
+                throw new CustomerNotExistException("This customer is not exist");
             }
             SQLConnectionOpen();
             string str = string.Format($"UPDATE Customers SET FIRST_NAME = '{ob.firstName}',LAST_NAME = '{ob.lastName}'," +

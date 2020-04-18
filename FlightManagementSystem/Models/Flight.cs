@@ -9,16 +9,16 @@ namespace FlightManagementSystem.Models
 {
     public class Flight : IPoco , INotifyPropertyChanged
     {
-        public int id;
-        public int airLineCompanyId;
-        public int originCountryCode;
-        public int destinationCountryCode;
-        public DateTime departureTime;
-        public DateTime landingTime;
-        public int remainingTickets;
-        public int flightStatusId;
+        public int id { get; set; }
+        public int airLineCompanyId { get; set; }
+        public int originCountryCode { get; set; }
+        public int destinationCountryCode { get; set; }
+        public DateTime departureTime { get; set; }
+        public DateTime landingTime { get; set; }
+        public int remainingTickets { get; set; }
+        public int flightStatusId { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
         public Flight(int id, int airLineCompanyId, int originCountryCode, int destinationCountryCode, 
             DateTime departureTime, DateTime landingTime, int remainingTickets)
@@ -34,6 +34,8 @@ namespace FlightManagementSystem.Models
 
         }
         public Flight() { }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public override bool Equals(object obj)
         {
@@ -51,7 +53,7 @@ namespace FlightManagementSystem.Models
         public override string ToString()
         {
             return ($"{id} ,{airLineCompanyId} ,{originCountryCode} ," +
-                $"{destinationCountryCode} ,{departureTime} ,{landingTime} ,{remainingTickets}");
+                $"{destinationCountryCode} ,{departureTime} ,{landingTime} ,{remainingTickets},{flightStatusId}");
         }
         public static bool operator ==(Flight f1, Flight f2)
         {

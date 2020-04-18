@@ -8,11 +8,11 @@ namespace FlightManagementSystem.Models
 {
    public class AirLineCompany : IPoco
     {
-        public int id;
-        public string airLineName;
-        public string userName;
-        public string password;
-        public int countryCode;
+        public int id { get; set; }
+        public string airLineName { get; set; }
+        public string userName { get; set; }
+        public string password { get; set; }
+        public int countryCode { get; set; }
 
         public AirLineCompany() { }
         public AirLineCompany( int id,string airlineName, string userName, string password, int countryCode)

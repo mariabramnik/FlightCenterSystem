@@ -21,6 +21,7 @@ namespace FlightManagementSystem.Modules
         Country GetCountryByName(string name);
         IList<Country> GetAllCountries();
         IList<Flight> GetAllFlightsByFlights_History();
+        IList<FlightStatus> GetFlightStatuses();
     }
 
 }

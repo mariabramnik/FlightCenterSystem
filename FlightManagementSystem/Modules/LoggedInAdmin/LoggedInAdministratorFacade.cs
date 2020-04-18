@@ -167,6 +167,17 @@ namespace FlightManagementSystem.Modules
             flightsList = _flightDAO.SelectAllFromFlights_History();
             return flightsList;
         }
-  
+
+        public IList<Customer> GetAllCustomers(LoginToken<Administrator> token)
+        {
+            IList<Customer> customersList = new List<Customer>();
+            customersList = _customerDAO.GetAll();
+            return customersList;
+        }
+
+        public Country GetCountry(LoginToken<Administrator> token, int id)
+        {
+            return _countryDAO.Get(id);
+        }
     }
 }

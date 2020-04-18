@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace FlightManagementSystem.Modules
 {
-    class CustomerAlreadyExistException : Exception
+    [Serializable]
+    public class CustomerAlreadyExistException : Exception
     {
-        public CustomerAlreadyExistException(string message) : base(message)
+        public CustomerAlreadyExistException()
         {
+        }
 
+        public CustomerAlreadyExistException(string message) : base("this customer is already exist")
+        {
+        }
+
+        public CustomerAlreadyExistException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected CustomerAlreadyExistException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }
