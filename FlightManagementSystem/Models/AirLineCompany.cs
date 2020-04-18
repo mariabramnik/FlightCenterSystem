@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-   public class AirLineCompany
+   public class AirLineCompany : IPoco
     {
-        public int id;
-        public string airLineName;
-        public string userName;
-        public string password;
-        public int countryCode;
+        public int id { get; set; }
+        public string airLineName { get; set; }
+        public string userName { get; set; }
+        public string password { get; set; }
+        public int countryCode { get; set; }
 
         public AirLineCompany() { }
         public AirLineCompany( int id,string airlineName, string userName, string password, int countryCode)
@@ -28,7 +28,7 @@ namespace FlightManagementSystem.Models
         {
             var company = obj as AirLineCompany;
             return !(company is null) &&
-                   id == company.id;
+                 id == company.id;
         }
 
         public override int GetHashCode()

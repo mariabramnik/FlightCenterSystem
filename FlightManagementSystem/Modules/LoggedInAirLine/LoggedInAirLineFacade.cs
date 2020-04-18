@@ -21,23 +21,26 @@ namespace FlightManagementSystem.Modules
 
         public void ChangeMyPassword(LoginToken<AirLineCompany> token, string oldPassword, string newPassword)
         {
-           AirLineCompany comp = _airLineDAO.Get(token.User.id);           
-            _airLineDAO.Update(comp);
+            token.User.password = newPassword;        
+            _airLineDAO.Update(token.User);
         }
 
-        public void CreateFlight(LoginToken<AirLineCompany> token, Flight flight)
+        public int CreateFlight(LoginToken<AirLineCompany> token, Flight flight)
         {
-            _flightDAO.Add(flight);
+           int res =  _flightDAO.Add(flight);
+            return res;
         }
 
-        public IList<Flight> GetAllFlights(LoginToken<AirLineCompany> token)
+        public IList<Flight> GetAllAirLineCompaniesFlights(LoginToken<AirLineCompany> token)
        {
-            return _flightDAO.GetAll();
+            return _flightDAO.GetFlightsByAirLineCompany(token.User);
        }
 
-        public List<Ticket> GetAllTickets(LoginToken<AirLineCompany> token)
+        public IList<Ticket> GetAllTicketsByAirLine(LoginToken<AirLineCompany> token)
         {
-           return  _ticketDAO.GetAll();
+            IList<Ticket> ticketList = new List<Ticket>();
+            ticketList =  _ticketDAO.GetTicketsByAirLineCompany(token.User);
+            return ticketList;
         }
 
         public void ModifyAirLineDetails(LoginToken<AirLineCompany> token, AirLineCompany airline)
@@ -50,9 +53,42 @@ namespace FlightManagementSystem.Modules
         {
             _flightDAO.Update(flight);
         }
+
         public Flight GetFlightByID(LoginToken<AirLineCompany> token,int id)
         {
            return  _flightDAO.GetFlightById(id);
+        }
+
+        public Country GetCountryByName(LoginToken<AirLineCompany> token,string countryName)
+        {
+           return  _countryDAO.GetByName(countryName);
+        }
+
+        public FlightStatus GetFlightStatusByName(LoginToken<AirLineCompany> token, string statusName)
+        {
+            return _flightStatusDAO.GetFlightStatusByName(statusName);
+        }
+        public IList<Ticket> GetAllTicketByFlight(LoginToken<AirLineCompany> token, Flight flight)
+        {
+            IList<Ticket> listTickets = _ticketDAO.GetTicketsByFlight(flight.id);
+            return listTickets;
+        }
+
+        public void RemoveTicket(LoginToken<AirLineCompany> token, Ticket ticket)
+        {
+            _ticketDAO.Remove(ticket);
+        }
+
+        public FlightStatus GetFlightstatusById(LoginToken<AirLineCompany> token, int id)
+        {
+           return _flightStatusDAO.Get(id);
+        }
+
+        public IList<FlightStatus> GetAllFlightStatus(LoginToken<AirLineCompany> token)
+        {
+            IList<FlightStatus> flightstatusList = new List<FlightStatus>();
+            flightstatusList =  _flightStatusDAO.GetAll();
+            return flightstatusList;
         }
     }
 }

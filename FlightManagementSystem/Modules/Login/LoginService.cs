@@ -31,11 +31,9 @@ namespace FlightManagementSystem.Modules.Login
             loginToken = null;
             AirLineCompany comp = null;
             _airLineDAO = new AirLineDAOMSSQL();
-            _airLineDAO.SQLConnectionOpen();
-            Dictionary<string,AirLineCompany> CompanyByUserNameDict =  _airLineDAO.userNameCompanyDict;
-            if (CompanyByUserNameDict.ContainsKey(userName))
-            {
-                comp = CompanyByUserNameDict[userName];
+             comp = _airLineDAO.GetAirLineByUserName(userName);
+             if(!(comp is null))
+            { 
                 if (comp.password != password)
                 {
                     throw new WrongPasswordException("entered password is not correct");
@@ -47,7 +45,6 @@ namespace FlightManagementSystem.Modules.Login
                     res = true;
                 }
             }
-            _airLineDAO.SQLConnectionClose();
             return res;
 
         }
@@ -57,7 +54,6 @@ namespace FlightManagementSystem.Modules.Login
             bool res = false;
             loginToken = null;
             _customerDAO = new CustomerDAOMSSQL();
-            _customerDAO.SQLConnectionOpen();
             Customer cust = _customerDAO.GetCustomerByUserName(userName);
             if(!(cust is null))
             {
@@ -72,16 +68,17 @@ namespace FlightManagementSystem.Modules.Login
                     loginToken.User = cust;
                 }
             }
-            _customerDAO.SQLConnectionClose();
             return res;
         }
 
-        public bool TryLogin(string password, string userName)
+        public bool TryLogin(string password, string userName, out ILoginToken token)
         {
             bool res = false;
             LoginToken<Administrator> ltAdmin = null;
             res = TryAdminLogin(password, userName, out ltAdmin);
-            if(res == false)
+  
+            //throw new FunnyException("HA HA");
+            if (res == false)
             {
                 LoginToken<AirLineCompany> ltAirLineCompany = null;
                 res = TryAirLineLogin(password, userName, out ltAirLineCompany);
@@ -93,9 +90,21 @@ namespace FlightManagementSystem.Modules.Login
                     {
                         throw new UserNotFoundException("Not Found");
                     }
-                }               
+                    else
+                    {
+                        token = ltCustomer;
+                    }
+                }
+                else
+                {
+                    token = ltAirLineCompany;
+                }
             }
-
+            else
+            {
+                token = ltAdmin;
+            }
+ 
             return res;
         }
 

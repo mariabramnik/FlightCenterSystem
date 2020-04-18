@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem
 {
-    interface IPoco
+    class AppConfig
     {
+        public static int timeOut = 6000000;
     }
 }

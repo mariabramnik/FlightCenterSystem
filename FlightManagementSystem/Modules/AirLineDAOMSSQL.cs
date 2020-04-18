@@ -10,83 +10,83 @@ namespace FlightManagementSystem.Modules
 {
     class AirLineDAOMSSQL : IAirLineDAO
     {
-        public Dictionary<int, AirLineCompany> idAiLineCompanyDict = new Dictionary<int, AirLineCompany>();
-        public Dictionary<string, AirLineCompany> userNameCompanyDict = new Dictionary<string, AirLineCompany>();
-        static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        // public Dictionary<int, AirLineCompany> idAiLineCompanyDict = new Dictionary<int, AirLineCompany>();
+        // public Dictionary<string, AirLineCompany> userNameCompanyDict = new Dictionary<string, AirLineCompany>();
+        // static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        static SqlConnection con = new SqlConnection(@"Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;");
         public void SQLConnectionOpen()
         {
-            con.Open();
-            DictionarysFilling();
+            if(con.State != System.Data.ConnectionState.Open)
+              con.Open();
+         //   DictionarysFilling();
 
         }
-
+        public void SQLConnectionClose()
+        {
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
+        }
         private void DictionarysFilling()
         {
+            SQLConnectionOpen();
             string str = "SELECT * FROM AirlineCompanies";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        
-                        AirLineCompany comp = new AirLineCompany
-                        {
-                            id = (int)reader["ID"],
-                            airLineName = (string)reader["AIRLINE_NAME"],
-                            userName = (string)reader["USER_NAME"],
-                            password = (string)reader["PASSWORD"],
-                            countryCode = (int)reader["COUNTRY_CODE"]
-                        };
-                        idAiLineCompanyDict.Add(comp.id,comp);
-                        userNameCompanyDict.Add(comp.userName, comp);
+                         AirLineCompany comp = new AirLineCompany
+                         {
+                             id = (int)reader["ID"],
+                             airLineName = (string)reader["AIRLINE_NAME"],
+                             userName = (string)reader["USER_NAME"],
+                             password = (string)reader["PASSWORD"],
+                             countryCode = (int)reader["COUNTRY_CODE"]
+                         };
+                            //  idAiLineCompanyDict.Add(comp.id,comp);
+                            //  userNameCompanyDict.Add(comp.userName, comp);                       
                     }
                 }
             }
+            SQLConnectionClose();
         }
-
-        public void SQLConnectionClose()
-        {
-            con.Close();
-        }
-       
-        public void Add(AirLineCompany ob)
-        {
-            int id = ob.id;
-            string airLineName = ob.airLineName;
-            string userName = ob.userName;
-            string password = ob.password;
-            int countryCode = ob.countryCode;
-
-            if (idAiLineCompanyDict.ContainsKey(id))
+        public int Add(AirLineCompany ob)
+        {   
+            int res = 0;
+            AirLineCompany comp = GetAirLineCompanyByName(ob.airLineName);
+            if (comp is null)
+            {
+                SQLConnectionOpen();
+                string str = $"INSERT INTO AirlineCompanies VALUES('{ob.airLineName}','{ob.userName}','{ob.password}',{ob.countryCode});SELECT SCOPE_IDENTITY()";
+                using (SqlCommand cmd = new SqlCommand(str, con))
+                {
+                    res  = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            else
             {
                 throw new AirLineCompanyAlreadyExistException("Such Airline Company already exist");
             }
-            string str = $"INSERT INTO AirlineCompanies VALUES({id},'{airLineName}','{userName}','{password}',{countryCode})";            
-            
-            using (SqlCommand cmd = new SqlCommand(str, con))
-            {
-                cmd.ExecuteNonQuery();
-            }
-            idAiLineCompanyDict.Add(id,ob);
-            userNameCompanyDict.Add(userName, ob);
+            // idAiLineCompanyDict.Add(id,ob);
+            // userNameCompanyDict.Add(userName, ob);
+            SQLConnectionClose();
+            return res;
             
         }
 
         public AirLineCompany Get(int id)
         {
-            /*
-          
+            SQLConnectionOpen();
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE ID = {id}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();
                         comp = new AirLineCompany
                         {
                             id = (int)reader["ID"],
@@ -95,107 +95,80 @@ namespace FlightManagementSystem.Modules
                             password = (string)reader["PASSWORD"],
                             countryCode = (int)reader["COUNTRY_CODE"]
                         };
+                        
                     }
                 }
             }
-            
-            return comp;
-            */
-            AirLineCompany comp = null;
-            if (idAiLineCompanyDict.ContainsKey(id))
-            {
-                 comp = idAiLineCompanyDict[id];
-            }
-
+            SQLConnectionClose();
             return comp;
 
         }
         public AirLineCompany GetAirLineCompanyByName(string airLineName)
         {
+            SQLConnectionOpen();
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE AIRLINE_NAME = '{airLineName}'";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();
                         comp = new AirLineCompany
                         {
-                            id = (int)reader["ID"],
-                            airLineName = (string)reader["AIRLINE_NAME"],
-                            userName = (string)reader["USER_NAME"],
-                            password = (string)reader["PASSWORD"],
-                            countryCode = (int)reader["COUNTRY_CODE"]
-                        };
+                             id = (int)reader["ID"],
+                             airLineName = (string)reader["AIRLINE_NAME"],
+                             userName = (string)reader["USER_NAME"],
+                             password = (string)reader["PASSWORD"],
+                             countryCode = (int)reader["COUNTRY_CODE"]
+                        };                       
                     }
                 }
             }
-
+            SQLConnectionClose();
             return comp;
         }
 
         public AirLineCompany GetAirLineByUserName(string userName)
         {
-            /*
-            
+            SQLConnectionOpen();
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE USER_NAME = '{userName}'";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();
                         comp = new AirLineCompany
                         {
-                            id = (int)reader["ID"],
-                            airLineName = (string)reader["AIRLINE_NAME"],
-                            userName = (string)reader["USER_NAME"],
-                            password = (string)reader["PASSWORD"],
-                            countryCode = (int)reader["COUNTRY_CODE"]
-                        };
+                             id = (int)reader["ID"],
+                             airLineName = (string)reader["AIRLINE_NAME"],
+                             userName = (string)reader["USER_NAME"],
+                             password = (string)reader["PASSWORD"],
+                             countryCode = (int)reader["COUNTRY_CODE"]
+                        };                        
                     }
                 }
             }
-           
+            SQLConnectionClose();
             return comp;
-            */
-            AirLineCompany comp = null;
-            if (userNameCompanyDict.ContainsKey(userName))
-            {
-                comp = userNameCompanyDict[userName];
-            }
-
-            return comp;
-
         }
 
-        public List<AirLineCompany> GetAll()
+        public IList<AirLineCompany> GetAll()
         {
-            List<AirLineCompany> companies = new List<AirLineCompany>();
-            foreach (KeyValuePair<int,AirLineCompany> pair in idAiLineCompanyDict)
+            SQLConnectionOpen();
+            List<AirLineCompany> compList = new List<AirLineCompany>();
+            string str = $"SELECT * FROM AirlineCompanies";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                companies.Add(pair.Value);
-            }
-            return companies;
-        }
-
-        public List<AirLineCompany> GetAllAirLinesCompanyByCountry(Country country)
-        {
-            
-            List<AirLineCompany> compList = new List<AirLineCompany>() ;
-            string str = $"SELECT * FROM AirlineCompanies WHERE COUNTRY_CODE = '{country.id}'";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    while (reader.Read())
                     {
-                       AirLineCompany comp = new AirLineCompany
+                        AirLineCompany comp = new AirLineCompany
                         {
                             id = (int)reader["ID"],
                             airLineName = (string)reader["AIRLINE_NAME"],
@@ -205,100 +178,126 @@ namespace FlightManagementSystem.Modules
                         };
                         compList.Add(comp);
                     }
+
                 }
             }
-           
+            SQLConnectionClose();
+            return compList;
+        }
+
+        public List<AirLineCompany> GetAllAirLinesCompanyByCountry(Country country)
+        {
+            SQLConnectionOpen();
+            List<AirLineCompany> compList = new List<AirLineCompany>() ;
+            string str = $"SELECT * FROM AirlineCompanies WHERE COUNTRY_CODE = '{country.id}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                     while (reader.Read())
+                     {
+                         AirLineCompany comp = new AirLineCompany
+                         {
+                             id = (int)reader["ID"],
+                             airLineName = (string)reader["AIRLINE_NAME"],
+                             userName = (string)reader["USER_NAME"],
+                             password = (string)reader["PASSWORD"],
+                             countryCode = (int)reader["COUNTRY_CODE"]
+                         };
+                            compList.Add(comp);                     
+                     }
+                }
+            }
+            SQLConnectionClose();
             return compList;
         }
 
         public void Remove(AirLineCompany ob)
-        {
+        {          
             int id = ob.id;
-            if (!idAiLineCompanyDict.ContainsKey(id))
+            AirLineCompany comp = Get(ob.id);
+            if(comp is null)
             {
-                throw new AirLineCompanyNotExistException("Such AirLine Company not exist");
+                throw new AirLineCompanyNotExistException("This company not exist");
             }
-            string str = $"DELETE FROM AirlineCompanies WHERE ID = {id}";
-           
+            SQLConnectionOpen();
+            string str = $"DELETE FROM AirlineCompanies WHERE ID = {id}";         
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-            idAiLineCompanyDict.Remove(id);
-            
+            SQLConnectionClose();
         }
 
         public void Update(AirLineCompany ob)
-        {
-            int id = ob.id;
-            if (!idAiLineCompanyDict.ContainsKey(id))
+        {     
+            AirLineCompany comp = Get(ob.id);
+            if (comp is null)
             {
-                throw new AirLineCompanyNotExistException("Such AirLine Company not exist");
+                throw new AirLineCompanyNotExistException("This company not exist");
             }
-            AirLineCompany oldAirLineComp = Get(id);
-            string oldCompUserName = oldAirLineComp.userName;
-            string airLineName = ob.airLineName;
-            string userName = ob.userName;
-            string password = ob.password;
-            int countryCode = ob.countryCode;
-            string str = $"UPDATE AirlineCompanies SET AIRLINE_NAME = '{airLineName}',USER_NAME = '{userName}',PASSWORD = '{password}',COUNTRY_CODE = {countryCode} WHERE ID = {id}";
-            
+            AirLineCompany oldAirLineComp = Get(ob.id);
+            SQLConnectionOpen();
+            string str = $"UPDATE AirlineCompanies SET AIRLINE_NAME = '{ob.airLineName}',USER_NAME = '{ob.userName}',PASSWORD = '{ob.password}',COUNTRY_CODE = {ob.countryCode} WHERE ID = {ob.id}";           
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-
-            idAiLineCompanyDict.Remove(id);
-            userNameCompanyDict.Remove(oldCompUserName);
-            idAiLineCompanyDict.Add(id, ob);
-            userNameCompanyDict.Add(userName, ob);
-
+            SQLConnectionClose();
         }
 
         public AirLineCompany GetCompanyByPassword(string password)
         {
+            SQLConnectionOpen();
             AirLineCompany comp = null;
             string str = $"SELECT * FROM AirlineCompanies WHERE PASSWORD = '{password}'";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();
                         comp = new AirLineCompany
                         {
-                            id = (int) reader["ID"],
-                            airLineName = (string)reader["AIRLINE_NAME"],
-                            userName = (string)reader["USER_NAME"],
-                            password = (string)reader["PASSWORD"],
-                            countryCode = (int)reader["COUNTRY_CODE"]
+                             id = (int)reader["ID"],
+                             airLineName = (string)reader["AIRLINE_NAME"],
+                             userName = (string)reader["USER_NAME"],
+                             password = (string)reader["PASSWORD"],
+                             countryCode = (int)reader["COUNTRY_CODE"]
                         };
                     }
                 }
             }
-           
+            SQLConnectionClose();
             return comp;
         }
         public void RemoveAllFromAirLines()
         {
+            SQLConnectionOpen();
             string str = "delete from AirlineCompanies";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
+            SQLConnectionClose();
         }
         public bool IfTableAirlinesIsEmpty()
         {
+            SQLConnectionOpen();
             bool res = false;
             string str = $"SELECT COUNT(*) FROM AirlineCompanies";
-            SqlCommand cmd = new SqlCommand(str, con);
-            int num = (int)cmd.ExecuteScalar();
-            if (num == 0)
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                res = true;
+                int num = (int)cmd.ExecuteScalar();
+                if (num == 0)
+                {
+                    res = true;
+                }
             }
+            SQLConnectionClose();
             return res;
         }
+        
     }
 }

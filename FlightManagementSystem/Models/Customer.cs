@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class Customer
+    public class Customer : IPoco
     {
-        public int id;
-        public string firstName;
-        public string lastName;
-        public string userName;
-        public string password;
-        public string address;
-        public string phoneNo;
-        public string creditCardNumber;
+        public int id { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string userName { get; set; }
+        public string password { get; set; }
+        public string address { get; set; }
+        public string phoneNo{ get; set; }
+        public string creditCardNumber { get; set; }
 
         public Customer() { }
 

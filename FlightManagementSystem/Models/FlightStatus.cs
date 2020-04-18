@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class FlightStatus
+    public class FlightStatus : IPoco
     {
-        public int id;
-        public string statusName;
+        public int id { get; set; }
+        public string statusName { get; set; }
 
         public FlightStatus(int id, string statusName)
         {

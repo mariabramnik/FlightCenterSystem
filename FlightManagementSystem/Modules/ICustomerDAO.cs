@@ -12,5 +12,6 @@ namespace FlightManagementSystem.Modules
         Customer GetCustomerByUserName(string userName);
         void RemoveAllFromCustomers();
         bool IfTableCustomersIsEmpty();
+        void ChangeMyPassword(Customer customer, string oldPassword, string newPassword);
     }
 }

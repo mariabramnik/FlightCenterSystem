@@ -15,9 +15,21 @@ namespace FlightManagementSystem.Modules
         List<Flight> GetFlightsByDepartureTime(DateTime datetime);
         List<Flight> GetFlightsByDestinationCountry(Country country);
         List<Flight> GetFlightsByLandingTime(DateTime datetime);
-        List<Flight> GetFlightsByOriginCountryCode(Country country);
+        List<Flight> GetFlightsByOriginCountry(Country country);
         void RemoveAllFromFlights();
         bool IfTableFlightsIsEmpty();
+        Flight GetFlightByAllParametrs(Flight flight);
+        List<Flight> SelectElapsedFlightsToHistory();
+        void InsertElapsedFlightsToHistory(List<Flight> flightList);
+        void AddFlightToHistoryTable(Flight ob);
+        void DeleteElapsedFlightsFromFlights(List<Flight> flightList);
+        List<Flight> GetFlightsByAirLineCompany(AirLineCompany company);
+        void RemoveAllFromFlights_History();
+        bool IfTableFlights_HistoryIsEmpty();
+        List<Flight> SelectAllFromFlights_History();
+        FlightStatus GetFlightStatusByFlightStatusName(string statusName);
+
+
 
     }
 }

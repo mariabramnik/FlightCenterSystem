@@ -10,44 +10,51 @@ namespace FlightManagementSystem.Modules
 {
     class CustomerDAOMSSQL : ICustomerDAO
     {
-        static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        //static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        static SqlConnection con = new SqlConnection(@"Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;");
         public void SQLConnectionOpen()
         {
-            con.Open();
+            if (con.State != System.Data.ConnectionState.Open)
+                con.Open();
         }
         public void SQLConnectionClose()
         {
-            con.Close();
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
         }
-        public void Add(Customer ob)
-        {
-            int id = ob.id;
-            Customer customer = Get(id);
-            if (!(customer is null))
+        public int Add(Customer ob)
+        {        
+            int res = 0;
+            Customer customer =  GetCustomerByUserName(ob.userName);
+            if (customer is null)
+            {
+                SQLConnectionOpen();
+                string str = $"INSERT INTO Customers VALUES('{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}');SELECT SCOPE_IDENTITY()";
+                using (SqlCommand cmd = new SqlCommand(str, con))
+                {
+                    res = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            else
             {
                 throw new CustomerAlreadyExistException("This customer is already exist");
             }
-            string str = string.Format($"INSERT INTO Customers VALUES({id},'{ob.firstName}','{ob.lastName}','{ob.userName}','{ob.password}','{ob.address}','{ob.phoneNo}','{ob.creditCardNumber}')");
-            
-            using (SqlCommand cmd = new SqlCommand(str, con))
-            {
-                cmd.ExecuteNonQuery();
-            }
-
-         
+            SQLConnectionClose();
+            return res;        
         }
 
         public Customer Get(int id)
-        {    
+        {
+            SQLConnectionOpen();
             Customer customer = null;
             string str = $"SELECT * FROM Customers WHERE ID = {id}";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();
                         customer = new Customer
                         {
                             id = (int)reader["ID"],
@@ -58,119 +65,122 @@ namespace FlightManagementSystem.Modules
                             address = (string)reader["ADDRESS"],
                             phoneNo = (string)reader["PHONE_NO"],
                             creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
-
-                        };
+                        };                        
                     }
                 }
             }
+            SQLConnectionClose();
             return customer;
         }
 
-        public List<Customer> GetAll()
+        public IList<Customer> GetAll()
         {
-           
+            SQLConnectionOpen();
             List<Customer> customersList = new List<Customer>();
             string str = $"SELECT * FROM Customers";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Customer customer = new Customer
+                    while (reader.Read())
                     {
-                        id = (int)reader["ID"],
-                        firstName = (string)reader["FIRST_NAME"],
-                        lastName = (string)reader["LAST_NAME"],
-                        userName = (string)reader["USER_NAME"],
-                        password = (string)reader["PASSWORD"],
-                        address = (string)reader["ADDRESS"],
-                        phoneNo = (string)reader["PHONE_NO"],
-                        creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
-                    };
-                    customersList.Add(customer);
-                }
+                        Customer customer = new Customer
+                        {
+                            id = (int)reader["ID"],
+                            firstName = (string)reader["FIRST_NAME"],
+                            lastName = (string)reader["LAST_NAME"],
+                            userName = (string)reader["USER_NAME"],
+                            password = (string)reader["PASSWORD"],
+                            address = (string)reader["ADDRESS"],
+                            phoneNo = (string)reader["PHONE_NO"],
+                            creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
+                        };
+                        customersList.Add(customer);
+                    }
 
+                }
             }
-            
+            SQLConnectionClose();
             return customersList;
         }
 
         public Customer GetCustomerByUserName(string userName)
         {
-           
+            SQLConnectionOpen();
             Customer customer = null;
             string str = $"SELECT * FROM Customers WHERE USER_NAME = '{userName}'";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                if (reader.HasRows)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    reader.Read();
+                    if (reader.HasRows)
                     {
+                        reader.Read();                        
                         customer = new Customer
                         {
-                            id = (int)reader["ID"],
-                            firstName = (string)reader["FIRST_NAME"],
-                            lastName = (string)reader["LAST_NAME"],
-                            userName = (string)reader["USER_NAME"],
-                            password = (string)reader["PASSWORD"],
-                            address = (string)reader["ADDRESS"],
-                            phoneNo = (string)reader["PHONE_NO"],
-                            creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
-
-                        };
+                             id = (int)reader["ID"],
+                             firstName = (string)reader["FIRST_NAME"],
+                             lastName = (string)reader["LAST_NAME"],
+                             userName = (string)reader["USER_NAME"],
+                             password = (string)reader["PASSWORD"],
+                             address = (string)reader["ADDRESS"],
+                             phoneNo = (string)reader["PHONE_NO"],
+                             creditCardNumber = (string)reader["CREDIT_CARD_NUMBER"]
+                        };                       
                     }
-
                 }
             }
- 
-            return customer;
-           
+            SQLConnectionClose();
+            return customer;         
         }
 
         public void Remove(Customer ob)
-        {
+        { 
             int id = ob.id;
             Customer customer = Get(id);
             if (customer is null)
             {
                 throw new CustomerNotExistException("This customer is not exist");
             }
-            string str = $"DELETE FROM Customers WHERE ID = {id}";
-           
+            SQLConnectionOpen();
+            string str = $"DELETE FROM Customers WHERE ID = {id}";         
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-         
+            SQLConnectionClose();
         }
 
         public void Update(Customer ob)
         {
-            int id = ob.id;
-            Customer customer = Get(id);
+            Customer customer = Get(ob.id);
             if (customer is null)
             {
-                throw new CustomerAlreadyExistException("This customer is already exist");
+                throw new CustomerNotExistException("This customer is not exist");
             }
-            string str = string.Format($"UPDATE Customers SET FIRST_NAME = '{ob.firstName}',LAST_NAME = '{ob.lastName}',USER_NAME = '{ob.userName}', PASSWORD = '{ob.password}',Address = '{ob.address}',PHONE_NO = '{ob.phoneNo}',CREDIT_CARD_NUMBER = '{ob.creditCardNumber}' WHERE ID = {id}");
-           
+            SQLConnectionOpen();
+            string str = string.Format($"UPDATE Customers SET FIRST_NAME = '{ob.firstName}',LAST_NAME = '{ob.lastName}'," +
+                $"USER_NAME = '{ob.userName}', PASSWORD = '{ob.password}',Address = '{ob.address}',PHONE_NO = '{ob.phoneNo}'," +
+                $"CREDIT_CARD_NUMBER = '{ob.creditCardNumber}' WHERE ID = {ob.id}");          
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-
+            SQLConnectionClose();
         }
         public void RemoveAllFromCustomers()
         {
+            SQLConnectionOpen();
             string str = "delete from Customers";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
+            SQLConnectionClose();
         }
         public bool IfTableCustomersIsEmpty()
         {
+            SQLConnectionOpen();
             bool res = false;
             string str = $"SELECT COUNT(*) FROM Customers";
             SqlCommand cmd = new SqlCommand(str, con);
@@ -179,7 +189,13 @@ namespace FlightManagementSystem.Modules
             {
                 res = true;
             }
+            SQLConnectionClose();
             return res;
+        }
+        public void ChangeMyPassword(Customer customer, string oldPassword, string newPassword)
+        {
+            customer.password = newPassword;
+            Update(customer);
         }
 
     }

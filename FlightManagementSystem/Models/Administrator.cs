@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class Administrator
+    public class Administrator : IPoco
     {
         public string password = "9999";
         public string userName = "admin";

@@ -8,6 +8,7 @@ namespace FlightManagementSystem.Modules
 {
     public abstract class FacadeBase
     {
+        //in constructor creating DAO objects and DBConnection.Open in destructor DBConnectin.Close
         protected IAirLineDAO _airLineDAO;
         private AirLineDAOMSSQL __airLineDAO;
         protected ICountryDAO _countryDAO;
@@ -23,38 +24,24 @@ namespace FlightManagementSystem.Modules
         public FacadeBase()
         {
             __airLineDAO = new AirLineDAOMSSQL();
-            __airLineDAO.SQLConnectionOpen();
             _airLineDAO = __airLineDAO;
 
             __countryDAO = new CountryDAOMSSQL();
-            __countryDAO.SQLConnectionOpen();
             _countryDAO = __countryDAO;
 
             __customerDAO = new CustomerDAOMSSQL();
-            __customerDAO.SQLConnectionOpen();
             _customerDAO = __customerDAO;
 
             __flightDAO = new FlightDAOMSSQL();
-            __flightDAO.SQLConnectionOpen();
             _flightDAO = __flightDAO;
 
             __ticketDAO = new TicketDAOMSSQL();
-            __ticketDAO.SQLConnectionOpen();
             _ticketDAO = __ticketDAO;
 
             __flightStatusDAO = new FlightStatusDAOMSSQL();
-            __flightStatusDAO.SQLConnectionOpen();
             _flightStatusDAO = __flightStatusDAO;
 
         }
 
-        ~FacadeBase()
-        {
-            __airLineDAO.SQLConnectionClose();
-            __countryDAO.SQLConnectionClose();
-            __customerDAO.SQLConnectionClose();
-            __flightDAO.SQLConnectionClose();
-            __ticketDAO.SQLConnectionClose();
-        }
     }
 }

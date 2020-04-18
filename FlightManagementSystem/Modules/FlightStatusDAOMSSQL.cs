@@ -10,139 +10,186 @@ namespace FlightManagementSystem.Modules
 {
     class FlightStatusDAOMSSQL : IFlightStatusDAO
     {
-        public Dictionary<int, FlightStatus> flightStatusDict = new Dictionary<int, FlightStatus>();
-        static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        // public Dictionary<int, FlightStatus> flightStatusDict = new Dictionary<int, FlightStatus>();
+        // static SqlConnection con = new SqlConnection(@"Data Source=BRAMNIK-PC;Initial Catalog=FlightManagementSystem;Integrated Security=True");
+        static SqlConnection con = new SqlConnection(@"Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;");
         public void SQLConnectionOpen()
         {
-            con.Open();
-            DictionaryFilling();
+            if (con.State != System.Data.ConnectionState.Open)
+                con.Open();
+          //  DictionaryFilling();
+        }
+        public void SQLConnectionClose()
+        {
+            if (con.State != System.Data.ConnectionState.Closed)
+                con.Close();
         }
 
         private void DictionaryFilling()
         {
+            SQLConnectionOpen();
             string str = "SELECT * FROM FlightStatus";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            FlightStatus flSt = new FlightStatus
+                            {
+                                id = (int)reader["ID"],
+                                statusName = (string)reader["STATUS_NAME"],
+                            };
+                            //  flightStatusDict.Add(flSt.id,flSt);
+                        }
+                    }
+                }
+            }
+            SQLConnectionClose();
+        }
+
+        public int Add(FlightStatus ob)
+        {       
+            int res = 0;
+            int id = ob.id;
+            string statusName = ob.statusName;
+            FlightStatus flightSt = GetFlightStatusByFlightStatusName(ob.statusName);
+            if (flightSt is null)
+            {
+                SQLConnectionOpen();
+                string str = string.Format($"INSERT INTO FlightStatus VALUES('{statusName}');SELECT SCOPE_IDENTITY()");
+                using (SqlCommand cmd = new SqlCommand(str, con))
+                {
+                    res = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            else
+            {
+                throw new FlightStatusAlreadyExistException("This FlightStatus already exist");
+            }
+            SQLConnectionClose();
+            return res;
+        }
+
+        private FlightStatus GetFlightStatusByFlightStatusName(string statusName)
+        {
+            SQLConnectionOpen();
+            FlightStatus flStatus = null;
+            string str = $"SELECT * FROM FlightStatus WHERE STATUS_NAME = '{statusName}'";
             SqlCommand cmd = new SqlCommand(str, con);
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
-                    {
-                        FlightStatus flSt = new FlightStatus
-                        {
-                            id = (int)reader["ID"],
-                            statusName = (string)reader["STATUS_NAME"],             
-                        };
-                        flightStatusDict.Add(flSt.id,flSt);
-                    }
-                }
-            }
-        }
-
-        public void SQLConnectionClose()
-        {
-            con.Close();
-        }
-        public void Add(FlightStatus ob)
-        {
-            int id = ob.id;
-            string statusName = ob.statusName;
-            if (flightStatusDict.ContainsKey(id))
-            {
-                throw new FlStatusAlreadyExistException("Such Flight Status already exist");
-            }
-            string str = string.Format($"INSERT INTO FlightStatus VALUES({id},'{statusName}')");
-            using (SqlCommand cmd = new SqlCommand(str, con))
-            {
-                cmd.ExecuteNonQuery();
-            }
-            flightStatusDict.Add(id,ob);
-        }
-
-        public FlightStatus Get(int id)
-        {
-            FlightStatus flightStatus = null;
-            if (flightStatusDict.ContainsKey(id))
-            {
-                flightStatus = flightStatusDict[id];
-            }
-
-            return flightStatus;
-        }
-
- 
-
-        public List<FlightStatus> GetAll()
-        {
-            /*
-            List<FlightStatus> flightStatusList = new List<FlightStatus>();
-            string str = $"SELECT * FROM FlightStatus";
-            SqlCommand cmd = new SqlCommand(str, con);
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    FlightStatus flightStatus = new FlightStatus
+                    reader.Read();
+                    flStatus = new FlightStatus
                     {
                         id = (int)reader["ID"],
                         statusName = (string)reader["STATUS_NAME"]
                     };
-                    flightStatusList.Add(flightStatus);
                 }
+            }
+            SQLConnectionClose();
+            return flStatus;
+        }
 
-            }
-            return flightStatusList;
-            */
-            List<FlightStatus> flightStatusList = new List<FlightStatus>();
-            foreach(FlightStatus flSt in flightStatusDict.Values)
+
+        public FlightStatus Get(int id)
+        {
+            SQLConnectionOpen();
+            FlightStatus flStatus = null;
+            string str = $"SELECT * FROM FlightStatus WHERE ID = '{id}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
             {
-                flightStatusList.Add(flSt);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        flStatus = new FlightStatus
+                        {
+                            id = (int)reader["ID"],
+                            statusName = (string)reader["STATUS_NAME"]
+                        };
+                    }
+                }
             }
+            SQLConnectionClose();
+            return flStatus;
+        }
+
+        public IList<FlightStatus> GetAll()
+        {
+            SQLConnectionOpen();
+            List<FlightStatus> flightStatusList = new List<FlightStatus>();
+            string str = $"SELECT * FROM FlightStatus";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        FlightStatus flightStatus = new FlightStatus
+                        {
+                            id = (int)reader["ID"],
+                            statusName = (string)reader["STATUS_NAME"]
+                        };
+                        flightStatusList.Add(flightStatus);
+                    }
+                }
+            }
+            SQLConnectionClose();
             return flightStatusList;
         }
 
         public void Remove(FlightStatus ob)
-        {
+        {    
             int id = ob.id;
-            if (!flightStatusDict.ContainsKey(id))
+            FlightStatus flStatus = Get(id);
+            if (flStatus is null)
             {
                 throw new FlightStatusNotExistException("Such FlightStatus not exist");
             }
-            string str = string.Format($"DELETE FROM FlightStatus WHERE ID = {id})");
+            SQLConnectionOpen();
+            string str = $"DELETE FROM FlightStatus WHERE ID = {id}";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-            flightStatusDict.Remove(id);
+            SQLConnectionClose();
         }
 
         public void Update(FlightStatus ob)
-        {
-            int id = ob.id;
-            if (!flightStatusDict.ContainsKey(id))
+        {    
+            FlightStatus flStatus = Get(ob.id);
+            if (flStatus is null)
             {
                 throw new FlightStatusNotExistException("Such FlightStatus not exist");
             }
+            SQLConnectionOpen();
             string statusName = ob.statusName;
-            string str = string.Format($"UPDATE FlightStatus SET STATUS_NAME = '{statusName}' WHERE ID = {id}");
+            string str = string.Format($"UPDATE FlightStatus SET STATUS_NAME = '{statusName}' WHERE ID = {ob.id}");
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
-            flightStatusDict.Remove(id);
-            flightStatusDict.Add(id,ob);
-           
+            SQLConnectionClose();
         }
         public void RemoveAllFromFlightStatus()
         {
+            SQLConnectionOpen();
             string str = "delete from FlightStatus";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();
             }
+            SQLConnectionClose();
         }
         public bool IfTableFlightStatusIsEmpty()
         {
+            SQLConnectionOpen();
             bool res = false;
             string str = $"SELECT COUNT(*) FROM FlightStatus";
             SqlCommand cmd = new SqlCommand(str, con);
@@ -151,7 +198,31 @@ namespace FlightManagementSystem.Modules
             {
                 res = true;
             }
+            SQLConnectionClose();
             return res;
+        }
+        public FlightStatus GetFlightStatusByName(string statusName)
+        {
+            SQLConnectionOpen();
+            FlightStatus flStatus = null;
+            string str = $"SELECT * FROM FlightStatus WHERE STATUS_NAME = '{statusName}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        flStatus = new FlightStatus
+                        {
+                            id = (int)reader["ID"],
+                            statusName = (string)reader["STATUS_NAME"]
+                        };
+                    }
+                }
+            }
+            SQLConnectionClose();
+            return flStatus;
         }
     }
 }

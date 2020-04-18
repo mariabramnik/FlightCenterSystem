@@ -12,7 +12,7 @@ namespace FlightManagementSystem.Modules
 
         public IList<AirLineCompany> GetAllAirLineCompanies()
         {
-            return _airLineDAO.GetAll();
+            return _airLineDAO.GetAll(); 
         }
 
         public IList<Flight> GetAllFlights()
@@ -49,8 +49,39 @@ namespace FlightManagementSystem.Modules
         public IList<Flight> GetFlightsByOriginCountry(int countryCode)
         {
             Country country = _countryDAO.Get(countryCode);
-            return _flightDAO.GetFlightsByOriginCountryCode(country);
+            return _flightDAO.GetFlightsByOriginCountry(country);
         }
-       
+
+        public Country GetCountryByName(string name)
+        {
+            return _countryDAO.GetByName(name);
+        }
+
+        public  IList<Country> GetAllCountries()
+        {
+            IList<Country> list = _countryDAO.GetAll();
+            return list;
+        }
+
+        public IList<Flight> GetAllFlightsByAirLineCompanies(AirLineCompany comp)
+        {
+            IList<Flight> allFlightsByAirLine = new List<Flight>();
+            allFlightsByAirLine = _flightDAO.GetFlightsByAirLineCompany(comp);
+            return allFlightsByAirLine;
+        }
+
+        public IList<Flight> GetAllFlightsByFlights_History()
+        {
+            IList<Flight> listFlights = new List<Flight>();
+            listFlights = _flightDAO.SelectAllFromFlights_History();
+            return listFlights;
+        }
+
+        public IList<FlightStatus> GetFlightStatuses()
+        {
+            IList<FlightStatus> listFlightStatuses = new List<FlightStatus>();
+            listFlightStatuses = _flightStatusDAO.GetAll();
+            return listFlightStatuses;
+        }
     }
 }

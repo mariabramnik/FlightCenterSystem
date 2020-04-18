@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Data.SqlClient;
+using FlightManagementSystem.Models;
+using FlightManagementSystem.Modules.Login;
 
 namespace FlightManagementSystem.Modules.FlyingCenterSystem
 {
@@ -22,8 +24,6 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
         private Thread _timeoutThread;
         private bool _disposed = false;
         private int _timeout = 1000;
-        private int _executeCntr = 0;
-
         // Explicit static constructor to tell C# compiler
         // not to mark type as beforefieldinit
         static FlyingCenterSystem()
@@ -49,7 +49,7 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
                 return instance;
             }
         }
-
+// getFacade is gineric function is returning all facade's interfaces
         public T GetFacade<T>()
         {
             T obj = default(T);
@@ -92,33 +92,34 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
 
         private void execute()
         {
-            int res;
-            strTimeout = ConfigurationManager.AppSettings.Get("Key0");
-            bool bPrs = int.TryParse(strTimeout, out res);
-            if (bPrs)
+            // get transfer's timeout
+            _timeout = AppConfig.timeOut;
+            LoginToken<Administrator> ltAdmin = null;
+            LoginService ls = new LoginService();
+            bool resLogin = ls.TryAdminLogin("9999", "admin", out ltAdmin);
+            if (resLogin == true)
             {
-                _timeout = res;
-            }
-            else
-            {
-                _timeout = 1000;
-            }
-            while (!_disposed)
-            {       
-                Debug.WriteLine("Executed: {0}", _executeCntr);
-                try
+                while (!_disposed)
                 {
-                   Thread.Sleep(_timeout);
+                    try
+                    {
+                        Thread.Sleep(_timeout);
+                    }
+                    catch (ThreadInterruptedException e)
+                    {
+                        break;
+                    }
+
+                    ILoggedInAdministratorFacade iLoggedAdminFacade = GetFacade<ILoggedInAdministratorFacade>();
+                    //flights than landed more than 3 hours ago deleted from bd 
+                    //table Flights and recorded in the table Flights_History.And the same thing with tickets;
+                    lock (this)
+                    {
+                        iLoggedAdminFacade.TransferElapsedFlightsToHistory(ltAdmin);
+                    }
                 }
-                catch (ThreadInterruptedException e)
-                {
-                   _executeCntr = 0;
-                }
-               
-                _executeCntr = 0;
             }
         }
-
         public void Dispose()
         {
             _disposed = true;

@@ -10,6 +10,7 @@ namespace FlightManagementSystem.Modules
     public interface IAnonymousUserFacade
     {
         IList<AirLineCompany>GetAllAirLineCompanies();
+        IList<Flight> GetAllFlightsByAirLineCompanies(AirLineCompany comp);
         IList<Flight> GetAllFlights();
         Dictionary<Flight,int>GetAllFlightsVacancy();
         Flight GetFlightById(int id);
@@ -17,6 +18,10 @@ namespace FlightManagementSystem.Modules
         IList<Flight>GetFlightsByDesinationCountry(int countryCode);
         IList<Flight>GetFlightsByLandingDate(DateTime dateTimeLanding);
         IList<Flight>GetFlightsByOriginCountry(int countryCode);
+        Country GetCountryByName(string name);
+        IList<Country> GetAllCountries();
+        IList<Flight> GetAllFlightsByFlights_History();
+        IList<FlightStatus> GetFlightStatuses();
     }
 
 }

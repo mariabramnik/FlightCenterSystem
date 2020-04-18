@@ -8,9 +8,9 @@ namespace FlightManagementSystem.Modules
 {
     public interface IBasic<T>
     {
-        void Add(T ob);
+        int Add(T ob);
         T Get(int id);
-        List<T>GetAll();
+        IList<T>GetAll();
         void Remove(T ob);
         void Update(T ob);
     }

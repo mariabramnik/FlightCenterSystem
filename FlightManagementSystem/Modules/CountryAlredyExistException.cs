@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace FlightManagementSystem.Modules
 {
-    public class CountryAlredyExistException :  Exception
+    [Serializable]
+    public class CountryAlredyExistException : Exception
     {
-        public CountryAlredyExistException(string message) : base(message)
+        public CountryAlredyExistException()
         {
+        }
 
+        public CountryAlredyExistException(string message) : base("this country is already exist")
+        {
+        }
+
+        public CountryAlredyExistException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected CountryAlredyExistException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

@@ -1,16 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace FlightManagementSystem.Modules
 {
+    [Serializable]
     public class TicketAlreadyExistException : Exception
     {
-        public TicketAlreadyExistException(string message) : base(message)
+        public TicketAlreadyExistException()
         {
+        }
 
+        public TicketAlreadyExistException(string message) : base("this ticket is already exist")
+        {
+        }
+
+        public TicketAlreadyExistException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected TicketAlreadyExistException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

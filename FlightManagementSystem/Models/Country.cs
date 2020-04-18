@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
-    public class Country
+    public class Country : IPoco
     {
-        public int id;
-        public string countryName;
+        public int id { get; set; }
+        public string countryName { get; set; }
         
         public Country()
         {
@@ -27,7 +27,7 @@ namespace FlightManagementSystem.Models
         {
             var country = obj as Country;
             return country != null &&
-                   id == country.id;
+                  id == country.id;
         }
 
         public override int GetHashCode()
