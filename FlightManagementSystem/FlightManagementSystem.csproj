@@ -61,8 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="Helper\DBConnection.cs" />
     <Compile Include="Models\Administrator.cs" />
+    <Compile Include="Models\ChangePassword.cs" />
     <Compile Include="Modules\AirLineCompanyAlreadyExistException.cs" />
     <Compile Include="Modules\AirLineCompanyNotExistException.cs" />
     <Compile Include="Modules\CountryAlredyExistException.cs" />
@@ -117,6 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helper\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
