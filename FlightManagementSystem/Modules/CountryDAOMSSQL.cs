@@ -149,7 +149,33 @@ namespace FlightManagementSystem.Modules
             SQLConnectionClose();
             return countriesList;
         }
-      
+
+        List<City> ICountryDAO.GetAllByCountry(string countryName)
+        {
+            SQLConnectionOpen();
+            List<City> citiesList = new List<City>();
+            string str = $"SELECT * FROM Cities WHERE COUNTRY_NAME = '{countryName}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        City city = new City
+                        {
+                            id = (int)reader["ID"],
+                            city = (string)reader["CITY"],
+                            countryName = (string)reader["COUNTRY_NAME"]
+                        };
+                        citiesList.Add(city);
+                    }
+                }
+            }
+            SQLConnectionClose();
+            return citiesList;
+        }
+
+
         public void Remove(Country ob)
         {        
             string countryName = ob.countryName;
@@ -208,5 +234,6 @@ namespace FlightManagementSystem.Modules
             SQLConnectionClose();
             return res;
         }
+
     }
 }

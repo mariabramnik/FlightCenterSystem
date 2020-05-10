@@ -83,5 +83,31 @@ namespace FlightManagementSystem.Modules
             listFlightStatuses = _flightStatusDAO.GetAll();
             return listFlightStatuses;
         }
+
+        public IList<Flight> GetFlightsByLandingTime12Hours()
+        {
+            return _flightDAO.GetFlightsByLandingTime12Hours();
+        }
+
+        public IList<Flight> GetFlightsByDepartureTime12Hours()
+        {
+            return _flightDAO.GetFlightsByDepartureTime12Hours();
+        }
+
+        public Country GetCountryById(int id)
+        {
+            return _countryDAO.Get(id);
+        }
+
+        public IList<City> GetAllByCountry(string countryName)
+        {
+            IList<City> listCities = new List<City>();
+            return _countryDAO.GetAllByCountry(countryName);
+        }
+
+        public AirLineCompany GetAirLineById(int id)
+        {
+            return _airLineDAO.Get(id);
+        }
     }
 }

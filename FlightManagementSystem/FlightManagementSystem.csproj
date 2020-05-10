@@ -63,6 +63,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="Models\Administrator.cs" />
     <Compile Include="Models\ChangePassword.cs" />
+    <Compile Include="Models\City.cs" />
     <Compile Include="Modules\AirLineCompanyAlreadyExistException.cs" />
     <Compile Include="Modules\AirLineCompanyNotExistException.cs" />
     <Compile Include="Modules\CountryAlredyExistException.cs" />

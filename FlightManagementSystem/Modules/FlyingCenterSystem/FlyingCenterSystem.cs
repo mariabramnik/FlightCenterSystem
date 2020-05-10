@@ -116,6 +116,7 @@ namespace FlightManagementSystem.Modules.FlyingCenterSystem
                     lock (this)
                     {
                         iLoggedAdminFacade.TransferElapsedFlightsToHistory(ltAdmin);
+                        iLoggedAdminFacade.ChangeStatusToLanded(ltAdmin);
                     }
                 }
             }

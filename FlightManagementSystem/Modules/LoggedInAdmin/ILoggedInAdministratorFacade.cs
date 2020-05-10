@@ -31,6 +31,7 @@ namespace FlightManagementSystem.Modules
         List<Flight> GetAllFromFlights_History();
         IList<Customer> GetAllCustomers(LoginToken<Administrator> token);
         Country GetCountry(LoginToken<Administrator> token, int id);
+        void ChangeStatusToLanded(LoginToken<Administrator> token);
 
     }
 }

@@ -179,5 +179,10 @@ namespace FlightManagementSystem.Modules
         {
             return _countryDAO.Get(id);
         }
+
+        public void ChangeStatusToLanded(LoginToken<Administrator> token)
+        {
+            _flightDAO.ChangeFlightStatusToLanded();
+        }
     }
 }

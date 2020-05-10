@@ -28,7 +28,9 @@ namespace FlightManagementSystem.Modules
         bool IfTableFlights_HistoryIsEmpty();
         List<Flight> SelectAllFromFlights_History();
         FlightStatus GetFlightStatusByFlightStatusName(string statusName);
-
+        List<Flight> GetFlightsByLandingTime12Hours();
+        List<Flight> GetFlightsByDepartureTime12Hours();
+        void ChangeFlightStatusToLanded();
 
 
     }

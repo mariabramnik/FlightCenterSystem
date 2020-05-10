@@ -22,6 +22,11 @@ namespace FlightManagementSystem.Modules
         IList<Country> GetAllCountries();
         IList<Flight> GetAllFlightsByFlights_History();
         IList<FlightStatus> GetFlightStatuses();
+        IList<Flight>GetFlightsByLandingTime12Hours();
+        IList<Flight> GetFlightsByDepartureTime12Hours();
+        Country GetCountryById(int id);
+        IList<City> GetAllByCountry(string countryName);
+        AirLineCompany GetAirLineById(int id);
     }
 
 }

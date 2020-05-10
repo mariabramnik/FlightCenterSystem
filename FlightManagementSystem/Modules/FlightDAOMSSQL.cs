@@ -15,6 +15,7 @@ namespace FlightManagementSystem.Modules
         public void SQLConnectionOpen()
         {
             if (con.State != System.Data.ConnectionState.Open)
+                con.Close();
                 con.Open();
         }
         public void SQLConnectionClose()
@@ -271,6 +272,79 @@ namespace FlightManagementSystem.Modules
             return flByLandingTime;
         }
 
+        public List<Flight> GetFlightsByDepartureTime12Hours()
+        {
+            SQLConnectionOpen();
+            //SELECT* FROM Flights WHERE DEPARTURE_TIME = '2020-08-23 10:20.000';
+            List<Flight> flByDepartureTime = new List<Flight>();
+            Flight fl = null;
+            DateTime datetimeStart = DateTime.Now;
+            DateTime datetimeEnd = datetimeStart.AddHours(12);
+            string str = $"SELECT* FROM Flights WHERE DEPARTURE_TIME BETWEEN '{datetimeStart}' AND '{datetimeEnd}'";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        flByDepartureTime.Add(fl);
+
+                    }
+                }
+            }
+            SQLConnectionClose();
+            return flByDepartureTime;
+        }
+
+        public List<Flight> GetFlightsByLandingTime12Hours()
+        {
+            SQLConnectionOpen();
+            //SELECT* FROM Flights WHERE DEPARTURE_TIME = '2020-08-23 10:20.000';
+            List<Flight> flByLandingTime = new List<Flight>();
+            Flight fl = null;
+            DateTime datetimeStart = DateTime.Now;
+            DateTime datetimeEnd = datetimeStart.AddHours(12);
+            string str = $"SELECT* FROM Flights WHERE LANDING_TIME BETWEEN '{datetimeStart}' AND '{datetimeEnd}'";
+           // string str = $"SELECT* FROM Flights";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        flByLandingTime.Add(fl);
+
+                    }
+                }
+            }
+            SQLConnectionClose();
+            return flByLandingTime;
+        }
+
+
+
         public List<Flight> GetFlightsByOriginCountry(Country country)
         {
             SQLConnectionOpen();
@@ -494,7 +568,7 @@ namespace FlightManagementSystem.Modules
             //DateTime dtCurr = DateTime.Now;
             // DateTime dt = dtCurr.AddHours(3.0);
             List<Flight> elapsedFlights = new List<Flight>();
-            string str = $"SELECT * FROM Flights WHERE LANDING_TIME BETWEEN (SELECT DATEADD(DAY,-1, GETDATE())) AND (SELECT DATEADD(HOUR,-3, GETDATE()));";
+            string str = $"SELECT * FROM Flights WHERE LANDING_TIME BETWEEN (SELECT DATEADD(YEAR,-1, GETDATE())) AND (SELECT DATEADD(HOUR,-3, GETDATE()));";
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -593,6 +667,48 @@ namespace FlightManagementSystem.Modules
                 flight.flightStatusId = flStatus.id;
             }           
             return listFlights;
+        }
+
+        public void ChangeFlightStatusToLanded()
+        {
+            SQLConnectionOpen();
+            List<Flight> listFlights = new List<Flight>();
+            Flight fl = null;
+            string str = $"SELECT * FROM Flights WHERE LANDING_TIME < GetDate()";
+            using (SqlCommand cmd = new SqlCommand(str, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                         fl = new Flight
+                        {
+                            id = (int)reader["ID"],
+                            airLineCompanyId = (int)reader["AIRLINECOMPANY_ID"],
+                            originCountryCode = (int)reader["ORIGIN_COUNTRY_CODE"],
+                            destinationCountryCode = (int)reader["DESTINATION_COUNTRY_CODE"],
+                            departureTime = (DateTime)reader["DEPARTURE_TIME"],
+                            landingTime = (DateTime)reader["LANDING_TIME"],
+                            remainingTickets = (int)reader["REMAINING_TICKETS"],
+                            flightStatusId = (int)reader["FLIGHT_STATUS_ID"],
+                        };
+                        listFlights.Add(fl);
+                    }
+                }
+            }
+            FlightStatus flightStatus = GetFlightStatusByFlightStatusName("landing");
+            int flightStatusLandingId = flightStatus.id;
+            foreach(Flight flight in listFlights)
+            {
+                flight.flightStatusId = flightStatusLandingId;
+
+            }
+            SQLConnectionClose();
+            foreach(Flight flight in listFlights)
+            {
+                Update(flight);
+            }
+            
         }
 
         public FlightStatus GetFlightStatusByFlightStatusName(string statusName)

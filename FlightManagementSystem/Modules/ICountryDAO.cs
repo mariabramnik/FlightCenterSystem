@@ -12,5 +12,6 @@ namespace FlightManagementSystem.Modules
         void RemoveAllFromCountries();
         bool IfTableCountriesIsEmpty();
         Country GetByName(string name);
+        List<City> GetAllByCountry(string countryName);
     }
 }
