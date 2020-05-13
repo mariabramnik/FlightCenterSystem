@@ -109,5 +109,19 @@ namespace FlightManagementSystem.Modules
         {
             return _airLineDAO.Get(id);
         }
+
+        public IList<Flight> GetFlightsAlreadyTakenOff()
+        {
+            IList<Flight> listFlights = new List<Flight>();
+            listFlights = _flightDAO.GetFlightsAlreadyTakenOff();
+            return listFlights;
+        }
+
+        public IList<Flight> GetFlightsNotTakenOffYet()
+        {
+            IList<Flight> listFlights = new List<Flight>();
+            listFlights = _flightDAO.SearchNotTakenOffYet();
+            return listFlights;
+        }
     }
 }

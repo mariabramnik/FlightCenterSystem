@@ -27,6 +27,8 @@ namespace FlightManagementSystem.Modules
         Country GetCountryById(int id);
         IList<City> GetAllByCountry(string countryName);
         AirLineCompany GetAirLineById(int id);
+        IList<Flight> GetFlightsAlreadyTakenOff();
+        IList<Flight> GetFlightsNotTakenOffYet();
     }
 
 }

@@ -31,6 +31,8 @@ namespace FlightManagementSystem.Modules
         List<Flight> GetFlightsByLandingTime12Hours();
         List<Flight> GetFlightsByDepartureTime12Hours();
         void ChangeFlightStatusToLanded();
+        List<Flight> GetFlightsAlreadyTakenOff();
+        List<Flight> SearchNotTakenOffYet();
 
 
     }
