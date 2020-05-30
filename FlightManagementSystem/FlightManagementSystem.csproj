@@ -109,6 +109,11 @@
     <Compile Include="Modules\Login\ILoginService.cs" />
     <Compile Include="Modules\ITicketDAO.cs" />
     <Compile Include="Modules\Login\LoginService.cs" />
+    <Compile Include="Modules\QueryInsertItem.cs" />
+    <Compile Include="Modules\QueryRemoveItem.cs" />
+    <Compile Include="Modules\QuerySelectAll.cs" />
+    <Compile Include="Modules\QueryTemplateBase.cs" />
+    <Compile Include="Modules\QueryUpdateItem.cs" />
     <Compile Include="Modules\UserNotFoundException.cs" />
     <Compile Include="Modules\Login\WrongPasswordException.cs" />
     <Compile Include="Modules\TicketAlreadyExistException.cs" />

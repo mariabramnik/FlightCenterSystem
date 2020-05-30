@@ -63,6 +63,14 @@ namespace FlightManagementSystem.Modules
             return list;
         }
 
+        public IList<Country> GetAllCountriesByTemplate()
+        {
+            //           IList<Country> list = _countryDAO.GetAll();
+            List<Country> list = new QuerySelectAll().Run<Country>();
+
+            return list;
+        }
+
         public IList<Flight> GetAllFlightsByAirLineCompanies(AirLineCompany comp)
         {
             IList<Flight> allFlightsByAirLine = new List<Flight>();

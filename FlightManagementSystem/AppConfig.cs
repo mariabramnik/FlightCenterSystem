@@ -8,6 +8,7 @@ namespace FlightManagementSystem
 {
     class AppConfig
     {
-        public static int timeOut = 500000;
+        public static int timeOut = 900000;
+        public static string flightsystemdb = "Server=tcp:mashadb.database.windows.net,1433;Initial Catalog = flightSystem; Persist Security Info=False;User ID = mashadb; Password=288401Riga; MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;";
     }
 }

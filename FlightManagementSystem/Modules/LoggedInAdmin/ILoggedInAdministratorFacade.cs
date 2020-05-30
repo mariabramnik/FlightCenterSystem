@@ -13,6 +13,10 @@ namespace FlightManagementSystem.Modules
         int CreateNewCustomer(LoginToken<Administrator> token, Customer customer);
         void RemoveAirLine(LoginToken<Administrator> token, AirLineCompany comp);
         void RemoveCustomer(LoginToken<Administrator> token, Customer customer);
+        void RemoveCountryByTemplate(LoginToken<Administrator> token, Country country);
+        void RemoveCountry(LoginToken<Administrator> token, Country country);
+        void UpdateCountry(LoginToken<Administrator> token, Country country);
+        void UpdateCountryByTemplate(LoginToken<Administrator> token, Country country);
         void UpdateAirLineDetails(LoginToken<Administrator> token, AirLineCompany comp);
         void UpdateCustomerDetails(LoginToken<Administrator> token, Customer customer);
         void RemoveAllFromDB(LoginToken<Administrator> token);
@@ -20,6 +24,7 @@ namespace FlightManagementSystem.Modules
         AirLineCompany GetAirLineCompanyByName(LoginToken<Administrator> token,string name);
         int CreateCountry(LoginToken<Administrator> token,Country country);
         Country GetCountryByName(LoginToken<Administrator> token, string name);
+        int CreateCountryByTemplate(LoginToken<Administrator> token, Country country);
         AirLineCompany GetAirLineCompanyById(LoginToken<Administrator> token, int id);
         Customer GetCustomerByid(LoginToken<Administrator> token, int id);
         Customer GetCustomerByUserName(LoginToken<Administrator> token, string userName);

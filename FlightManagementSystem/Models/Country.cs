@@ -6,9 +6,24 @@ using System.Threading.Tasks;
 
 namespace FlightManagementSystem.Models
 {
+    [AttributeUsage(AttributeTargets.Class)]
+    public class MyTableNameAttribute : Attribute
+    {
+        public string TableName { get; set; }
+        public MyTableNameAttribute(string tableName) { this.TableName = tableName; }
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class MyFieldNameAttribute : Attribute
+    {
+        public string ColumnName { get; set; }
+    }
+
+    [MyTableName("Countries")]
     public class Country : IPoco
     {
         public int id { get; set; }
+        [MyFieldName(ColumnName = "COUNTRY_NAME")]
         public string countryName { get; set; }
         
         public Country()

@@ -185,7 +185,7 @@ namespace FlightManagementSystem.Modules
                 throw new CountryNotExistException("This Country not exist");
             }
             SQLConnectionOpen();
-            string str = string.Format($"DELETE FROM Countries WHERE ID = {ob.id})");                      
+            string str = string.Format($"DELETE FROM Countries WHERE ID = {ob.id}");                      
             using (SqlCommand cmd = new SqlCommand(str, con))
             {
                 cmd.ExecuteNonQuery();

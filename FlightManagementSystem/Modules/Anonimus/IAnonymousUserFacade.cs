@@ -20,6 +20,7 @@ namespace FlightManagementSystem.Modules
         IList<Flight>GetFlightsByOriginCountry(int countryCode);
         Country GetCountryByName(string name);
         IList<Country> GetAllCountries();
+        IList<Country> GetAllCountriesByTemplate();
         IList<Flight> GetAllFlightsByFlights_History();
         IList<FlightStatus> GetFlightStatuses();
         IList<Flight>GetFlightsByLandingTime12Hours();

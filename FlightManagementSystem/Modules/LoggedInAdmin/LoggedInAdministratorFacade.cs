@@ -37,6 +37,26 @@ namespace FlightManagementSystem.Modules
             _customerDAO.Remove(customer);
         }
 
+        public void RemoveCountry(LoginToken<Administrator> token, Country country)
+        {
+            _countryDAO.Remove(country);
+        }
+
+        public void RemoveCountryByTemplate(LoginToken<Administrator> token, Country country)
+        {
+            List<Country> list = new QueryRemoveItem().Run<Country>(country);
+        }
+
+        public void UpdateCountry(LoginToken<Administrator> token, Country country)
+        {
+            _countryDAO.Update(country);
+        }
+
+        public void UpdateCountryByTemplate(LoginToken<Administrator> token, Country country)
+        {
+            List<Country> list = new QueryUpdateItem().Run<Country>(country);
+        }
+
         public void UpdateAirLineDetails(LoginToken<Administrator> token, AirLineCompany comp)
         {
             _airLineDAO.Update(comp);
@@ -104,6 +124,13 @@ namespace FlightManagementSystem.Modules
         {
             int res = _countryDAO.Add(country);
             return res;
+        }
+
+        public int CreateCountryByTemplate(LoginToken<Administrator> token, Country country)
+        {
+            //List<Country> list = new QuerySelectAll().Run<Country>();
+            List<Country> list = new QueryInsertItem().Run<Country>(country);
+            return list[0].id;
         }
 
         public Country GetCountryByName(LoginToken<Administrator> token, string name)
